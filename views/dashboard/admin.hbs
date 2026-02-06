@@ -31,6 +31,10 @@
   <li class="nav-item" role="presentation">
     <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services-pane" type="button" role="tab" aria-controls="services-pane" aria-selected="false">Services</button>
   </li>
+  <!-- ADDED: Gallery Tab -->
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="gallery-tab" data-bs-toggle="tab" data-bs-target="#gallery-pane" type="button" role="tab" aria-controls="gallery-pane" aria-selected="false">Image Gallery</button>
+  </li>
 </ul>
 
 <!-- Tab Content -->
@@ -1032,6 +1036,40 @@
     </div>
     {{/if}}
   </div>
+
+  <!-- =============================== -->
+  <!-- ===    GALLERY PANE         === -->
+  <!-- =============================== -->
+  <div class="tab-pane fade" id="gallery-pane" role="tabpanel" aria-labelledby="gallery-tab" tabindex="0">
+    <h3 class="section-title">Image Gallery</h3>
+    <p class="text-muted">Manage images uploaded to the website. <strong>Warning:</strong> Deleting an image that is currently in use on the site will result in broken image links.</p>
+    
+    {{#if uploadedImages}}
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+        {{#each uploadedImages}}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div style="height: 150px; overflow: hidden;" class="bg-light d-flex align-items-center justify-content-center">
+                    <img src="{{this.url}}" alt="{{this.name}}" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-body p-2 d-flex flex-column">
+                    <small class="text-truncate d-block mb-2" title="{{this.name}}" style="font-size: 0.75rem;">{{this.name}}</small>
+                    <form action="/dashboard/images/{{this.name}}?_method=DELETE" method="POST" class="mt-auto w-100" onsubmit="return confirm('Are you sure you want to delete this image?');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger w-100 py-0" style="font-size: 0.8rem;">
+                            <i class="fas fa-trash-alt me-1"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    {{else}}
+    <div class="alert alert-info">No images uploaded yet.</div>
+    {{/if}}
+  </div>
+
+</div>
 
 {{!-- Inline Partial to reduce code repetition for standard switches --}}
 {{#*inline "_checklist_switch"}}
