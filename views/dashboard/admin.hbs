@@ -598,16 +598,16 @@
 
                         <h1 class="checklist-title">Daily Fleet Pre-Departure Checklist</h1>
 
-                        <!-- Info Grid (Visual Only for Template) -->
+                        <!-- Info Grid (Enabled for Template Defaults) -->
                         <div class="info-grid">
-                            <div class="info-cell"><strong>Date</strong><input type="date" disabled></div>
-                            <div class="info-cell"><strong>Department / Branch</strong><input type="text" disabled></div>
-                            <div class="info-cell"><strong>Registration No</strong><input type="text" disabled></div>
-                            <div class="info-cell"><strong>Odometer Reading</strong><input type="number" disabled></div>
-                            <div class="info-cell"><strong>Route</strong><input type="text" disabled></div>
-                            <div class="info-cell"><strong>Seats Occupied</strong><input type="number" disabled></div>
-                            <div class="info-cell route-cell"><strong>To site</strong><input type="text" disabled></div>
-                            <div class="info-cell route-cell"><strong>Return</strong><input type="text" disabled></div>
+                            <div class="info-cell"><strong>Date</strong><input type="date" name="date"></div>
+                            <div class="info-cell"><strong>Department / Branch</strong><input type="text" name="department"></div>
+                            <div class="info-cell"><strong>Registration No</strong><input type="text" name="registrationNo"></div>
+                            <div class="info-cell"><strong>Odometer Reading</strong><input type="number" name="odometerReading"></div>
+                            <div class="info-cell"><strong>Route</strong><input type="text" name="route"></div>
+                            <div class="info-cell"><strong>Seats Occupied</strong><input type="number" name="seatsOccupied"></div>
+                            <div class="info-cell route-cell"><strong>To site</strong><input type="text" name="toSite"></div>
+                            <div class="info-cell route-cell"><strong>Return</strong><input type="text" name="return"></div>
                             
                             <!-- Shift Selection -->
                             <div class="info-cell shift-group-wrapper" style="grid-column: span 4;">
@@ -937,6 +937,30 @@
                                 </tr>
                             </table>
                         </div>
+
+                        <!-- Footer Signatures (Enabled for Template Defaults) -->
+                        <div class="remarks-section mt-3">
+                            <p><strong>REPAIRS OR REMARKS DURING SHIFT</strong></p>
+                            <textarea name="remarks" rows="3" style="background-color: #f9f9f9; width: 100%; box-sizing: border-box;"></textarea>
+                            <div class="signature-line" style="display: flex; gap: 20px; margin-top: 10px;">
+                                <p>TIME <input type="time" name="remarks_time"></p>
+                                <p>SIGNATURE <input type="text" name="remarks_signature"></p>
+                            </div>
+                        </div>
+
+                        <div class="signature-area page-2 mt-4">
+                            <table class="signature-table w-100">
+                                <tr>
+                                    <td><strong>DRIVER NAME</strong><input type="text" name="driverName" class="w-100"></td>
+                                    <td><strong>DRIVERS SIGNATURE</strong><input type="text" name="driverSignature" class="w-100"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>SUPERVISOR NAME</strong><input type="text" name="supervisorName" class="w-100"></td>
+                                    <td><strong>SUPERVISOR SIGNATURE</strong><input type="text" name="supervisorSignature" class="w-100"></td>
+                                </tr>
+                            </table>
+                        </div>
+
                     </div>
                 </div>
 
@@ -1150,6 +1174,21 @@
                     otherChecks.forEach(name => {
                         const radio = checklistAdmin.querySelector(`input[name="${name}"]:checked`);
                         if(radio) data[name] = radio.value;
+                    });
+
+                    // D. Capture Info Grid Inputs (Top Section)
+                    const infoFields = ['date', 'department', 'registrationNo', 'odometerReading', 'route', 'seatsOccupied', 'toSite', 'return'];
+                    infoFields.forEach(field => {
+                        const input = checklistAdmin.querySelector(`input[name="${field}"]`);
+                        if(input && input.value) data[field] = input.value;
+                    });
+
+                    // E. Capture Footer Inputs (Bottom Section)
+                    const footerFields = ['remarks', 'remarks_time', 'remarks_signature', 'driverName', 'driverSignature', 'supervisorName', 'supervisorSignature'];
+                    footerFields.forEach(field => {
+                        // Check specifically within the checklist section to avoid name collisions
+                        const input = checklistAdmin.querySelector(`[name="${field}"]`); 
+                        if(input && input.value) data[field] = input.value;
                     });
 
                     document.getElementById('checklist_template_json').value = JSON.stringify(data);
