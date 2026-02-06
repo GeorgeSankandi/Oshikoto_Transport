@@ -1,6 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. DOM Persistence (Scroll & Tabs) ---
+    // --- 1. Chatbot State Persistence (MODIFIED) ---
+    const keepChatOpen = localStorage.getItem('keepChatOpen');
+    const chatWindow = document.getElementById('chat-window');
+    if (keepChatOpen === 'true' && chatWindow) {
+        // If the flag is set, open the chat window automatically
+        chatWindow.style.display = 'flex';
+        setTimeout(() => {
+            chatWindow.classList.remove('hidden');
+        }, 10);
+        // Remove the flag so it doesn't reopen on manual reloads
+        localStorage.removeItem('keepChatOpen');
+    }
+
+    // --- 2. DOM Persistence (Scroll & Tabs) ---
     // Restore Scroll Position
     const sidebarScroll = localStorage.getItem('sidebarScroll');
     if (sidebarScroll) {
@@ -29,9 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- 2. Chatbot Logic (With Navigation Capability) ---
+    // --- 3. Chatbot Logic (With Navigation Capability) ---
     const chatIcon = document.getElementById('chat-icon');
-    const chatWindow = document.getElementById('chat-window');
     const closeChat = document.getElementById('close-chat');
     const chatForm = document.getElementById('chat-form');
     const chatInput = document.getElementById('chat-input');
@@ -128,6 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     chatBody.appendChild(navMsg);
                     chatBody.scrollTop = chatBody.scrollHeight;
 
+                    // MODIFIED: Set the flag before navigating
+                    localStorage.setItem('keepChatOpen', 'true');
+
                     setTimeout(() => {
                         window.location.href = navigateUrl;
                     }, 1000); // 1-second delay so user can read the message first
@@ -159,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 3. Live Sale Timer Logic ---
+    // --- 4. Live Sale Timer Logic ---
     const countdownElements = document.querySelectorAll('.countdown-timer');
     countdownElements.forEach(timer => {
         const saleEndDate = new Date(timer.dataset.saleEnd).getTime();
@@ -183,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000);
     });
 
-    // --- 4. Checklist Display Logic (Individual Service Page) ---
+    // --- 5. Checklist Display Logic (Individual Service Page) ---
     if (window.location.pathname.match(/^\/services\//)) {
         const pathParts = window.location.pathname.split('/');
         const serviceId = pathParts[2];
@@ -269,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 5. Checklist Display Logic (Main Transportation Page) ---
+    // --- 6. Checklist Display Logic (Main Transportation Page) ---
     if (window.location.pathname === '/transportation') {
         const displayContainer = document.getElementById('transportation-checklists-display');
         const serviceCards = document.querySelectorAll('[data-service-id]');
@@ -349,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 6. Dropdown Logic (Desktop/Mobile Fixes) ---
+    // --- 7. Dropdown Logic (Desktop/Mobile Fixes) ---
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
     dropdownToggles.forEach(toggle => {
         toggle.addEventListener('click', (e) => {
@@ -378,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- 7. Admin Geolocation Logic (Safe Check) ---
+    // --- 8. Admin Geolocation Logic (Safe Check) ---
     const geoBtn = document.getElementById('btn-geo-locate');
     const geoInput = document.getElementById('contact_map_query');
     
