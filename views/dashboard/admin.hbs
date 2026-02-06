@@ -202,7 +202,60 @@
                 </div>
 
                 <hr class="my-4">
-                <h5 class="card-title">5. Contact Us Page Details</h5>
+                <h5 class="card-title">5. About Us - Mission, Vision & Why Us</h5>
+                <div class="p-3 mb-3 border rounded bg-white shadow-sm">
+                    <div class="row">
+                        <!-- Mission -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Our Mission Text</label>
+                            <textarea name="about_mission_text" class="form-control" rows="3">{{siteContent.about_mission_text}}</textarea>
+                            <div class="mt-2">
+                                <label class="form-label small">Mission Image</label>
+                                <input type="file" name="about_mission_image" class="form-control form-control-sm">
+                                <small class="text-muted d-block">Current: {{siteContent.about_mission_image}}</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Vision -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Our Vision Text</label>
+                            <textarea name="about_vision_text" class="form-control" rows="3">{{siteContent.about_vision_text}}</textarea>
+                            <div class="mt-2">
+                                <label class="form-label small">Vision Image</label>
+                                <input type="file" name="about_vision_image" class="form-control form-control-sm">
+                                <small class="text-muted d-block">Current: {{siteContent.about_vision_image}}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <label class="form-label fw-bold text-primary">"Why Choose Us" Section</label>
+                    <div class="row">
+                        <!-- Reason 1 -->
+                        <div class="col-md-3 mb-2">
+                            <input type="text" name="about_why_1_title" class="form-control mb-1 fw-bold" value="{{siteContent.about_why_1_title}}" placeholder="Title 1">
+                            <textarea name="about_why_1_text" class="form-control" rows="2" placeholder="Desc 1">{{siteContent.about_why_1_text}}</textarea>
+                        </div>
+                        <!-- Reason 2 -->
+                        <div class="col-md-3 mb-2">
+                            <input type="text" name="about_why_2_title" class="form-control mb-1 fw-bold" value="{{siteContent.about_why_2_title}}" placeholder="Title 2">
+                            <textarea name="about_why_2_text" class="form-control" rows="2" placeholder="Desc 2">{{siteContent.about_why_2_text}}</textarea>
+                        </div>
+                        <!-- Reason 3 -->
+                        <div class="col-md-3 mb-2">
+                            <input type="text" name="about_why_3_title" class="form-control mb-1 fw-bold" value="{{siteContent.about_why_3_title}}" placeholder="Title 3">
+                            <textarea name="about_why_3_text" class="form-control" rows="2" placeholder="Desc 3">{{siteContent.about_why_3_text}}</textarea>
+                        </div>
+                        <!-- Reason 4 -->
+                        <div class="col-md-3 mb-2">
+                            <input type="text" name="about_why_4_title" class="form-control mb-1 fw-bold" value="{{siteContent.about_why_4_title}}" placeholder="Title 4">
+                            <textarea name="about_why_4_text" class="form-control" rows="2" placeholder="Desc 4">{{siteContent.about_why_4_text}}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+                <h5 class="card-title">6. Contact Us Page Details</h5>
                 <div class="p-3 mb-3 border rounded bg-white shadow-sm">
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -229,7 +282,7 @@
                 </div>
 
                 <hr class="my-4">
-                <h5 class="card-title">6. "Meet Our Team" Section</h5>
+                <h5 class="card-title">7. "Meet Our Team" Section</h5>
                 <div class="row">
                     {{#each (array '1' '2' '3')}}
                     <div class="col-md-4 mb-3">
