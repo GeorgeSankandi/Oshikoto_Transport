@@ -23,7 +23,15 @@ module.exports = {
     res.redirect('/dashboard');
   },
   
-  // --- ADD THIS NEW MIDDLEWARE FUNCTION ---
+  // --- ADDED MIDDLEWARE FOR EDITING PERMISSIONS ---
+  ensureCanEditServices: function(req, res, next) {
+    if(req.isAuthenticated() && (req.user.role === 'provider' || req.user.role === 'admin' || req.user.role === 'clerk')) {
+        return next();
+    }
+    req.flash('error_msg', 'You do not have permission to edit services.');
+    res.redirect('/dashboard');
+  },
+  
   preventCaching: function(req, res, next) {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.set('Pragma', 'no-cache');
