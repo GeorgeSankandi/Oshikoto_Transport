@@ -86,6 +86,7 @@
                     <th>Provider</th>
                     <th>Category</th>
                     <th>Price</th>
+                    <th>Actions</th> <!-- MODIFIED: Added Actions column -->
                 </tr>
             </thead>
             <tbody>
@@ -95,6 +96,10 @@
                     <td>{{provider.name}}</td>
                     <td>{{category}}</td>
                     <td>N$ {{price}}</td>
+                    <td>
+                        <!-- MODIFIED: Added Edit button -->
+                        <a href="/services/edit/{{_id}}" class="btn btn-sm btn-secondary">Edit</a>
+                    </td>
                 </tr>
                 {{/each}}
             </tbody>
