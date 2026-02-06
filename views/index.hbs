@@ -1,0 +1,154 @@
+{{!-- MODIFIED: About Section --}}
+<section id="about-home" class="py-5">
+    <div class="container">
+        <div class="row align-items-center gx-5">
+            {{!-- Text Column --}}
+            <div class="col-lg-6">
+                <h2 class="section-title">Your Trusted Partner in Namibia</h2>
+                <p class="lead text-muted" style="text-align: justify;">
+                    {{siteContent.home_about_text}}
+                </p>
+                <a href="/about" class="btn btn-primary mt-3">Learn More About Us</a>
+            </div>
+            {{!-- Image Column --}}
+            <div class="col-lg-6 mt-4 mt-lg-0">
+                {{#if siteContent.home_about_image}}
+                    <img src="{{siteContent.home_about_image}}" class="img-fluid rounded" alt="Oshikoto Transport and Investment CC" style="box-shadow: var(--shadow);">
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================== -->
+<!-- === CORE SERVICES SECTION === -->
+<!-- ========================== -->
+<section id="services-home" class="py-5" style="background-color: var(--light-gray);">
+    <div class="container">
+        <h2 class="text-center section-title">Our Core Services</h2>
+        <div class="row text-center g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white mx-auto mb-3 text-primary" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 24 24">
+                          <path fill-rule="evenodd" d="M4 4a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2v14a1 1 0 1 1 0 2H5a1 1 0 1 1 0-2V5a1 1 0 0 1-1-1Zm5 2a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H9Zm5 0a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1Zm-5 4a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1H9Zm5 0a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1h-1Zm-3 4a2 2 0 0 0-2 2v3h2v-3h2v3h2v-3a2 2 0 0 0-2-2h-2Z" clip-rule="evenodd"/>
+                        </svg>
+                        <h5 class="card-title">Civil & Building Construction</h5>
+                        <p class="card-text">Expert solutions for construction projects, road works, and property development.</p>
+                        <a href="/construction" class="btn btn-secondary mt-auto">View More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-truck mx-auto mb-3 text-primary" viewBox="0 0 16 16"><path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2 2 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456M12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12zM5 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/></svg>
+                        <h5 class="card-title">Transportation</h5>
+                        <p class="card-text">Reliable and efficient transportation services for various commercial and industrial needs.</p>
+                        <a href="/transportation" class="btn btn-secondary mt-auto">View More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white mx-auto mb-3 text-primary" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13v-2a1 1 0 0 0-1-1h-.757l-.707-1.707.535-.536a1 1 0 0 0 0-1.414l-1.414-1.414a1 1 0 0 0-1.414 0l-.536.535L14 4.757V4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1-1v.757l-1.707.707-.536-.535a1 1 0 0 0-1.414 0L4.929 6.343a1 1 0 0 0 0 1.414l.536.536L4.757 10H4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h.757l.707 1.707-.535.536a1 1 0 0 0 0-1.414l1.414-1.414a1 1 0 0 0 1.414 0l.536-.535 1.707.707V20a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-.757l1.707-.708.536.536a1 1 0 0 0 1.414 0l1.414-1.414a1 1 0 0 0 0-1.414l-.535-.536.707-1.707H20a1 1 0 0 0 1-1Z"/>
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                        </svg>
+                        <h5 class="card-title">Technical & Repair Services</h5>
+                        <p class="card-text">Skilled technicians for plumbing, electrical, welding, and mechanical installations and repairs.</p>
+                        <a href="/technical" class="btn btn-secondary mt-auto">View More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <svg class="mx-auto mb-3 text-primary" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="-5 50 260 140">
+                           <path d="M63,133c-13,0-23.5,10.5-23.5,23.5s10.5,23.5,23.5,23.5c13,0,23.5-10.5,23.5-23.5S76,133,63,133z M63,165.4     c-4.9,0-9-4.1-9-9c0-4.9,4.1-9,9-9c4.9,0,9,4.1,9,9C72,161.4,68,165.4,63,165.4z M210.8,132c-13,0-23.5,10.5-23.5,23.5     s10.5,23.5,23.5,23.5c13,0,23.5-10.5,23.5-23.5S223.8,132,210.8,132z M210.8,164.4c-4.9,0-9-4.1-9-9c0-4.9,4.1-9,9-9     c4.9,0,9,4.1,9,9C219.8,160.4,215.8,164.4,210.8,164.4z M-0.5,143.1c0,4.6,3.7,8.2,8.2,8.2h22.6c0.9,0,1.7-0.7,1.9-1.5     c2.6-14.7,15.4-24.9,30.8-24.9s28.3,10.2,30.8,24.9c0.2,0.9,0.9,1.5,1.9,1.5H99h30.9V115H-0.5V143.1z M253.6,134.5h-5v-22     c0-7.5-6.1-13.6-13.7-13.6h-24.3c-0.5,0-1-0.3-1.4-0.6l-38-37c-1.7-1.7-4.1-2.7-6.6-2.8h-27.5v92.8h40.9c0.9,0,1.7-0.7,1.9-1.5     c2.6-14.7,15.4-25.9,30.8-25.9s28.3,11.2,30.8,25.9c0.2,0.9,0.9,1.5,1.9,1.5h3.2c4.9,0,8.7-3.9,8.7-8.7v-6.3     C255.5,135.4,254.6,134.5,253.6,134.5z M191.1,99h-41.4c-1,0-1.9-0.9-1.9-1.9V70.7c0-1,0.9-1.9,1.9-1.9h13.9c0.5,0,1,0.3,1.5,0.6     l27.5,26.3C193.5,97,192.7,99,191.1,99z"/>
+                           <path d="M57.8,101.5H17.1V60.8h15.7v13h9.3v-13h15.7V101.5z M110.9,101.5H70.3V60.8H86v13h9.3v-13h15.7V101.5z M84.7,48.3H44V7.6  h15.7v13H69v-13h15.7V48.3z"/>
+                        </svg>
+                        <h5 class="card-title">General Services & Supply</h5>
+                        <p class="card-text">Comprehensive support including catering, cleaning, security, and supply delivery.</p>
+                        <a href="/general-supply" class="btn btn-secondary mt-auto">View More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Team Section (Modern Card Style) -->
+<section class="team-section py-5">
+    <div class="container py-5">
+        <div class="text-center mx-auto pb-5" style="max-width: 800px;">
+            <h2 class="section-title">Meet Our Team</h2>
+            <p class="lead text-muted mb-5">The dedicated professionals behind Oshikoto Transport & Investment CC.</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            {{#if siteContent.about_team_1_name}}
+            <div class="col-lg-4 col-md-6 d-flex justify-content-center">
+                <div class="team-card-modern">
+                    <div class="image_container">
+                        <img src="{{siteContent.about_team_1_image}}" alt="{{siteContent.about_team_1_name}}" class="team-image">
+                    </div>
+                    <div class="team-title-modern">
+                        <span>{{siteContent.about_team_1_name}}</span>
+                    </div>
+                    <div class="team-role-modern">
+                        <span>{{siteContent.about_team_1_title}}</span>
+                    </div>
+                    <div class="team-action-modern">
+                        <a href="/team/1" class="profile-button">
+                            <span>View Profile</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+
+            {{#if siteContent.about_team_2_name}}
+            <div class="col-lg-4 col-md-6 d-flex justify-content-center">
+                <div class="team-card-modern">
+                    <div class="image_container">
+                        <img src="{{siteContent.about_team_2_image}}" alt="{{siteContent.about_team_2_name}}" class="team-image">
+                    </div>
+                    <div class="team-title-modern">
+                        <span>{{siteContent.about_team_2_name}}</span>
+                    </div>
+                    <div class="team-role-modern">
+                        <span>{{siteContent.about_team_2_title}}</span>
+                    </div>
+                    <div class="team-action-modern">
+                        <a href="/team/2" class="profile-button">
+                            <span>View Profile</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+
+            {{#if siteContent.about_team_3_name}}
+            <div class="col-lg-4 col-md-6 d-flex justify-content-center">
+                <div class="team-card-modern">
+                    <div class="image_container">
+                        <img src="{{siteContent.about_team_3_image}}" alt="{{siteContent.about_team_3_name}}" class="team-image">
+                    </div>
+                    <div class="team-title-modern">
+                        <span>{{siteContent.about_team_3_name}}</span>
+                    </div>
+                    <div class="team-role-modern">
+                        <span>{{siteContent.about_team_3_title}}</span>
+                    </div>
+                    <div class="team-action-modern">
+                        <a href="/team/3" class="profile-button">
+                            <span>View Profile</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</section>

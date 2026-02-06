@@ -1,0 +1,128 @@
+<div class="about-content">
+    <!-- Mission Section -->
+    <div class="row align-items-center mb-5 gx-5">
+        <div class="col-lg-6">
+            <img src="{{siteContent.about_mission_image}}" class="img-fluid rounded shadow-lg" alt="Team discussing a project">
+        </div>
+        <div class="col-lg-6">
+            <h2 class="section-title">Our Mission</h2>
+            <p class="lead">{{siteContent.about_mission_text}}</p>
+        </div>
+    </div>
+
+    <!-- Vision Section -->
+    <div class="row align-items-center mb-5 gx-5 flex-lg-row-reverse">
+        <div class="col-lg-6">
+            <img src="{{siteContent.about_vision_image}}" class="img-fluid rounded shadow-lg" alt="A handyman working with precision">
+        </div>
+        <div class="col-lg-6">
+            <h2 class="section-title">Our Vision</h2>
+            <p class="lead">{{siteContent.about_vision_text}}</p>
+        </div>
+    </div>
+
+    <!-- Why Choose Us Section -->
+    <div class="text-center my-5 py-5 bg-light rounded">
+         <h2 class="section-title">Why Choose Us?</h2>
+         <div class="row mt-4 px-3">
+             <div class="col-md-3">
+                 <h5>{{siteContent.about_why_1_title}}</h5>
+                 <p class="text-muted">{{siteContent.about_why_1_text}}</p>
+             </div>
+             <div class="col-md-3">
+                 <h5>{{siteContent.about_why_2_title}}</h5>
+                 <p class="text-muted">{{siteContent.about_why_2_text}}</p>
+             </div>
+             <div class="col-md-3">
+                 <h5>{{siteContent.about_why_3_title}}</h5>
+                 <p class="text-muted">{{siteContent.about_why_3_text}}</p>
+             </div>
+             <div class="col-md-3">
+                 <h5>{{siteContent.about_why_4_title}}</h5>
+                 <p class="text-muted">{{siteContent.about_why_4_text}}</p>
+             </div>
+         </div>
+    </div>
+</div>
+
+
+<!-- Our Team Section (Modern Card Style) -->
+<section class="team-section py-5">
+    <div class="container py-5">
+        <div class="text-center mx-auto pb-5" style="max-width: 800px;">
+            <h2 class="section-title">Meet Our Team</h2>
+            <!-- EDITABLE TEAM INTRO TEXT -->
+            <p class="lead text-muted mb-5">
+                {{#if siteContent.about_team_intro}}
+                    {{siteContent.about_team_intro}}
+                {{else}}
+                    The dedicated professionals behind Oshikoto Transport & Investment CC.
+                {{/if}}
+            </p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            {{#if siteContent.about_team_1_name}}
+            <div class="col-lg-4 col-md-6 d-flex justify-content-center">
+                <div class="team-card-modern">
+                    <div class="image_container">
+                        <img src="{{siteContent.about_team_1_image}}" alt="{{siteContent.about_team_1_name}}" class="team-image">
+                    </div>
+                    <div class="team-title-modern">
+                        <span>{{siteContent.about_team_1_name}}</span>
+                    </div>
+                    <div class="team-role-modern">
+                        <span>{{siteContent.about_team_1_title}}</span>
+                    </div>
+                    <div class="team-action-modern">
+                        <a href="/team/1" class="profile-button">
+                            <span>View Profile</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+
+            {{#if siteContent.about_team_2_name}}
+            <div class="col-lg-4 col-md-6 d-flex justify-content-center">
+                <div class="team-card-modern">
+                    <div class="image_container">
+                        <img src="{{siteContent.about_team_2_image}}" alt="{{siteContent.about_team_2_name}}" class="team-image">
+                    </div>
+                    <div class="team-title-modern">
+                        <span>{{siteContent.about_team_2_name}}</span>
+                    </div>
+                    <div class="team-role-modern">
+                        <span>{{siteContent.about_team_2_title}}</span>
+                    </div>
+                    <div class="team-action-modern">
+                        <a href="/team/2" class="profile-button">
+                            <span>View Profile</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+
+            {{#if siteContent.about_team_3_name}}
+            <div class="col-lg-4 col-md-6 d-flex justify-content-center">
+                <div class="team-card-modern">
+                    <div class="image_container">
+                        <img src="{{siteContent.about_team_3_image}}" alt="{{siteContent.about_team_3_name}}" class="team-image">
+                    </div>
+                    <div class="team-title-modern">
+                        <span>{{siteContent.about_team_3_name}}</span>
+                    </div>
+                    <div class="team-role-modern">
+                        <span>{{siteContent.about_team_3_title}}</span>
+                    </div>
+                    <div class="team-action-modern">
+                        <a href="/team/3" class="profile-button">
+                            <span>View Profile</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</section>

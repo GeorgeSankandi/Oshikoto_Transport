@@ -1,0 +1,289 @@
+<h3 class="section-title">Add New Vehicle</h3> <!-- MODIFIED -->
+<div class="card">
+    <div class="card-body p-4">
+        <form action="/services" method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="title" class="form-label">Vehicle Name / Model</label> <!-- MODIFIED -->
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Rental Price (N$ / Day)</label> <!-- MODIFIED -->
+                <input type="number" class="form-control" id="price" name="price" required>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Vehicle Type</label> <!-- MODIFIED -->
+                <select id="category" name="category" class="form-select">
+                    <option value="Sedan" selected>Sedan</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Truck">Truck</option>
+                    <option value="Bus">Bus</option>
+                    <option value="Van">Van</option>
+                    <option value="Luxury">Luxury</option>
+                </select>
+            </div>
+             <hr>
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="onSale" name="onSale" value="true">
+                        <label class="form-check-label" for="onSale">
+                            <strong>Special Offer?</strong> <!-- MODIFIED -->
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <label for="saleEndDate" class="form-label">Offer End Date</label> <!-- MODIFIED -->
+                    <input type="date" class="form-control" id="saleEndDate" name="saleEndDate">
+                </div>
+            </div>
+            <hr>
+            <div class="mb-3">
+                <label for="serviceImage" class="form-label">Vehicle Image</label> <!-- MODIFIED -->
+                <input class="form-control" type="file" id="serviceImage" name="serviceImage">
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Vehicle Details</label> <!-- MODIFIED -->
+                <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+            </div>
+
+            <!-- Pre-Departure Checklist Section for Transportation & Carwash -->
+            <div id="checklistSection" style="display:none;">
+                <hr>
+                <h5 class="mb-4">Pre-Departure Checklist Template</h5>
+                <link rel="stylesheet" href="/css/checklist-style.css">
+
+                <div class="container-fluid my-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="checklist-form-wrapper">
+                                <header class="header-grid">
+                                    <div class="header-col-1">
+                                        <p><strong>Company Name:</strong><br>Oshikoto Transport & Investment CC</p>
+                                        <p><strong>Document Type:</strong><br>Health, Safety & Environmental Checklist</p>
+                                    </div>
+                                    <div class="header-col-2">
+                                        <p><strong>Document No./Saved As:</strong> C002</p>
+                                        <p><strong>Revision Number:</strong> 01</p>
+                                        <p><strong>Page:</strong> Page 1 of 2</p>
+                                    </div>
+                                    <div class="header-col-3">
+                                        <div class="logo-box">
+                                            <img src="https://via.placeholder.com/150x50?text=Oshikoto+Transport+Logo" alt="Logo">
+                                        </div>
+                                    </div>
+                                </header>
+
+                                <h1 class="checklist-title">Daily Fleet Pre-Departure Checklist</h1>
+
+                                <div class="instructions">
+                                    <p>* If item is in order, please mark with a "OK"</p>
+                                    <p>* If there is a problem with an item, please mark - **DEF** (class A machine is not operated until fix / class B To be rectified at next daily service)</p>
+                                    <p>* Mark Fire Extinguisher and First Aid Kit area with (**Y/N**)</p>
+                                </div>
+
+                                <div class="checklist-container">
+                                    <!-- Table 1 -->
+                                    <div class="table-wrapper">
+                                        <table class="checklist-table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-desc">Description</th>
+                                                    <th class="col-class">Class</th>
+                                                    <th class="col-switch">Status</th>
+                                                    <th class="col-dep-ref">Notes</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="section-header"><td colspan="4"><strong>External Checks:</strong></td></tr>
+                                                
+                                                <tr data-item="Brake Fluid">
+                                                    <td>Brake Fluid</td>
+                                                    <td class="col-class">B</td>
+                                                    <td class="switch-cell">
+                                                        <div class="toggle-switch three-state" data-name="Brake_Fluid">
+                                                            <div class="switch-control">
+                                                                <input type="radio" name="Brake_Fluid" value="OK" class="status-input status-ok-input">
+                                                                <input type="radio" name="Brake_Fluid" value="N/A" class="status-input status-na-input">
+                                                                <input type="radio" name="Brake_Fluid" value="DEF" class="status-input status-def-input">
+                                                                <span class="slider"></span>
+                                                            </div>
+                                                        </div>
+                                                        <span class="unselected-notification">N/A</span>
+                                                    </td>
+                                                    <td><input type="text" name="Brake_Fluid_Notes"></td>
+                                                </tr>
+                                                <tr data-item="Window Washer Fluid">
+                                                    <td>Window Washer Fluid</td>
+                                                    <td class="col-class">B</td>
+                                                    <td class="switch-cell">
+                                                        <div class="toggle-switch three-state" data-name="Window_Washer_Fluid">
+                                                            <div class="switch-control"><input type="radio" name="Window_Washer_Fluid" value="OK" class="status-input status-ok-input"><input type="radio" name="Window_Washer_Fluid" value="N/A" class="status-input status-na-input"><input type="radio" name="Window_Washer_Fluid" value="DEF" class="status-input status-def-input"><span class="slider"></span></div>
+                                                        </div>
+                                                        <span class="unselected-notification">N/A</span>
+                                                    </td>
+                                                    <td><input type="text" name="Window_Washer_Fluid_Notes"></td>
+                                                </tr>
+                                                <tr data-item="Door Handles">
+                                                    <td>Door Handles</td><td class="col-class">B</td>
+                                                    <td class="switch-cell"><div class="toggle-switch three-state" data-name="Door_Handles"><div class="switch-control"><input type="radio" name="Door_Handles" value="OK" class="status-input status-ok-input"><input type="radio" name="Door_Handles" value="N/A" class="status-input status-na-input"><input type="radio" name="Door_Handles" value="DEF" class="status-input status-def-input"><span class="slider"></span></div></div><span class="unselected-notification">N/A</span></td>
+                                                    <td><input type="text" name="Door_Handles_Notes"></td>
+                                                </tr>
+                                                <tr data-item="License valid">
+                                                    <td>License valid</td><td class="col-class">B</td>
+                                                    <td class="switch-cell"><div class="toggle-switch three-state" data-name="License_valid"><div class="switch-control"><input type="radio" name="License_valid" value="OK" class="status-input status-ok-input"><input type="radio" name="License_valid" value="N/A" class="status-input status-na-input"><input type="radio" name="License_valid" value="DEF" class="status-input status-def-input"><span class="slider"></span></div></div><span class="unselected-notification">N/A</span></td>
+                                                    <td><input type="text" name="License_valid_Notes"></td>
+                                                </tr>
+                                                <tr data-item="Branding Intact">
+                                                    <td>Branding Intact</td><td class="col-class">B</td>
+                                                    <td class="switch-cell"><div class="toggle-switch three-state" data-name="Branding_Intact"><div class="switch-control"><input type="radio" name="Branding_Intact" value="OK" class="status-input status-ok-input"><input type="radio" name="Branding_Intact" value="N/A" class="status-input status-na-input"><input type="radio" name="Branding_Intact" value="DEF" class="status-input status-def-input"><span class="slider"></span></div></div><span class="unselected-notification">N/A</span></td>
+                                                    <td><input type="text" name="Branding_Intact_Notes"></td>
+                                                </tr>
+                                                <tr data-item="Lights - Brake Lights">
+                                                    <td>Lights - Brake Lights</td><td class="col-class">A</td>
+                                                    <td class="switch-cell"><div class="toggle-switch three-state" data-name="Lights_Brake_Lights"><div class="switch-control"><input type="radio" name="Lights_Brake_Lights" value="OK" class="status-input status-ok-input"><input type="radio" name="Lights_Brake_Lights" value="N/A" class="status-input status-na-input"><input type="radio" name="Lights_Brake_Lights" value="DEF" class="status-input status-def-input"><span class="slider"></span></div></div><span class="unselected-notification">N/A</span></td>
+                                                    <td><input type="text" name="Lights_Brake_Lights_Notes"></td>
+                                                </tr>
+                                                <tr data-item="Oil Level">
+                                                    <td>Oil Level</td><td class="col-class">A</td>
+                                                    <td class="switch-cell"><div class="toggle-switch three-state" data-name="Oil_Level"><div class="switch-control"><input type="radio" name="Oil_Level" value="OK" class="status-input status-ok-input"><input type="radio" name="Oil_Level" value="N/A" class="status-input status-na-input"><input type="radio" name="Oil_Level" value="DEF" class="status-input status-def-input"><span class="slider"></span></div></div><span class="unselected-notification">N/A</span></td>
+                                                    <td><input type="text" name="Oil_Level_Notes"></td>
+                                                </tr>
+                                                <tr data-item="Tire Tread">
+                                                    <td>Tire Tread</td><td class="col-class">A</td>
+                                                    <td class="switch-cell"><div class="toggle-switch three-state" data-name="Tire_Tread"><div class="switch-control"><input type="radio" name="Tire_Tread" value="OK" class="status-input status-ok-input"><input type="radio" name="Tire_Tread" value="N/A" class="status-input status-na-input"><input type="radio" name="Tire_Tread" value="DEF" class="status-input status-def-input"><span class="slider"></span></div></div><span class="unselected-notification">N/A</span></td>
+                                                    <td><input type="text" name="Tire_Tread_Notes"></td>
+                                                </tr>
+                                                <tr data-item="Wiper Blades">
+                                                    <td>Wiper Blades</td><td class="col-class">B</td>
+                                                    <td class="switch-cell"><div class="toggle-switch three-state" data-name="Wiper_Blades"><div class="switch-control"><input type="radio" name="Wiper_Blades" value="OK" class="status-input status-ok-input"><input type="radio" name="Wiper_Blades" value="N/A" class="status-input status-na-input"><input type="radio" name="Wiper_Blades" value="DEF" class="status-input status-def-input"><span class="slider"></span></div></div><span class="unselected-notification">N/A</span></td>
+                                                    <td><input type="text" name="Wiper_Blades_Notes"></td>
+                                                </tr>
+                                                <tr data-item="Jack">
+                                                    <td>Jack</td><td class="col-class">B</td>
+                                                    <td class="switch-cell"><div class="toggle-switch three-state" data-name="Jack"><div class="switch-control"><input type="radio" name="Jack" value="OK" class="status-input status-ok-input"><input type="radio" name="Jack" value="N/A" class="status-input status-na-input"><input type="radio" name="Jack" value="DEF" class="status-input status-def-input"><span class="slider"></span></div></div><span class="unselected-notification">N/A</span></td>
+                                                    <td><input type="text" name="Jack_Notes"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Table 2 -->
+                                    <div class="table-wrapper">
+                                        <table class="checklist-table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-desc">Description</th>
+                                                    <th class="col-class">Class</th>
+                                                    <th class="col-switch">Status</th>
+                                                    <th class="col-dep-ref">Notes</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="section-header"><td colspan="4"><strong>Internal Checks:</strong></td></tr>
+                                                <tr data-item="Warning Lights">
+                                                    <td>Warning Lights</td><td class="col-class">A</td>
+                                                    <td class="switch-cell"><div class="toggle-switch three-state" data-name="Warning_Lights"><div class="switch-control"><input type="radio" name="Warning_Lights" value="OK" class="status-input status-ok-input"><input type="radio" name="Warning_Lights" value="N/A" class="status-input status-na-input"><input type="radio" name="Warning_Lights" value="DEF" class="status-input status-def-input"><span class="slider"></span></div></div><span class="unselected-notification">N/A</span></td>
+                                                    <td><input type="text" name="Warning_Lights_Notes"></td>
+                                                </tr>
+                                                <tr data-item="Heat Gauge">
+                                                    <td>Heat Gauge</td><td class="col-class">A</td>
+                                                    <td class="switch-cell"><div class="toggle-switch three-state" data-name="Heat_Gauge"><div class="switch-control"><input type="radio" name="Heat_Gauge" value="OK" class="status-input status-ok-input"><input type="radio" name="Heat_Gauge" value="N/A" class="status-input status-na-input"><input type="radio" name="Heat_Gauge" value="DEF" class="status-input status-def-input"><span class="slider"></span></div></div><span class="unselected-notification">N/A</span></td>
+                                                    <td><input type="text" name="Heat_Gauge_Notes"></td>
+                                                </tr>
+                                                <tr data-item="Seats & Seat Belts">
+                                                    <td>Seats & Seat Belts</td><td class="col-class">A</td>
+                                                    <td class="switch-cell"><div class="toggle-switch three-state" data-name="Seats_Seat_Belts"><div class="switch-control"><input type="radio" name="Seats_Seat_Belts" value="OK" class="status-input status-ok-input"><input type="radio" name="Seats_Seat_Belts" value="N/A" class="status-input status-na-input"><input type="radio" name="Seats_Seat_Belts" value="DEF" class="status-input status-def-input"><span class="slider"></span></div></div><span class="unselected-notification">N/A</span></td>
+                                                    <td><input type="text" name="Seats_Seat_Belts_Notes"></td>
+                                                </tr>
+                                                <tr data-item="Mirrors (rear & side)">
+                                                    <td>Mirrors (rear & side)</td><td class="col-class">B</td>
+                                                    <td class="switch-cell"><div class="toggle-switch three-state" data-name="Mirrors"><div class="switch-control"><input type="radio" name="Mirrors" value="OK" class="status-input status-ok-input"><input type="radio" name="Mirrors" value="N/A" class="status-input status-na-input"><input type="radio" name="Mirrors" value="DEF" class="status-input status-def-input"><span class="slider"></span></div></div><span class="unselected-notification">N/A</span></td>
+                                                    <td><input type="text" name="Mirrors_Notes"></td>
+                                                </tr>
+                                                <tr data-item="Fuel level (%)">
+                                                    <td>Fuel level (%)</td><td class="col-class">B</td>
+                                                    <td class="switch-cell"><div class="toggle-switch three-state" data-name="Fuel_level"><div class="switch-control"><input type="radio" name="Fuel_level" value="OK" class="status-input status-ok-input"><input type="radio" name="Fuel_level" value="N/A" class="status-input status-na-input"><input type="radio" name="Fuel_level" value="DEF" class="status-input status-def-input"><span class="slider"></span></div></div><span class="unselected-notification">N/A</span></td>
+                                                    <td><input type="text" name="Fuel_level_Notes"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="other-checks">
+                                     <p><strong>Other:</strong></p>
+                                    <table>
+                                        <tr>
+                                            <td class="other-desc">Fire Extinguisher available?</td>
+                                            <td class="y-n-switch-cell">
+                                                <div class="toggle-switch three-state y-n-switch" data-name="Fire_Extinguisher">
+                                                    <div class="switch-control"><input type="radio" name="Fire_Extinguisher" value="Y" class="status-input status-ok-input"><input type="radio" name="Fire_Extinguisher" value="N/A" class="status-input status-na-input"><input type="radio" name="Fire_Extinguisher" value="N" class="status-input status-def-input"><span class="slider"></span></div>
+                                                </div><span class="unselected-notification">N/A</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="other-desc">First aid kit available?</td>
+                                            <td class="y-n-switch-cell">
+                                                <div class="toggle-switch three-state y-n-switch" data-name="First_Aid_Kit">
+                                                    <div class="switch-control"><input type="radio" name="First_Aid_Kit" value="Y" class="status-input status-ok-input"><input type="radio" name="First_Aid_Kit" value="N/A" class="status-input status-na-input"><input type="radio" name="First_Aid_Kit" value="N" class="status-input status-def-input"><span class="slider"></span></div>
+                                                </div><span class="unselected-notification">N/A</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Vehicle</button> <!-- MODIFIED -->
+            <a href="/dashboard" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const categorySelect = document.getElementById('category');
+        const checklistSection = document.getElementById('checklistSection');
+        const form = document.querySelector('form');
+        
+        function toggleChecklist() {
+            const selectedCategory = categorySelect.value || '';
+            if (selectedCategory.toLowerCase().includes('carwash') || 
+                selectedCategory.toLowerCase().includes('transportation')) {
+                checklistSection.style.display = 'block';
+            } else {
+                checklistSection.style.display = 'none';
+            }
+        }
+        
+        // Serialize checklist form data before submission
+        form.addEventListener('submit', function(e) {
+            // Collect checklist selections
+            const checklistData = {};
+            
+            // Get all radio inputs in checklist section
+            const radios = document.querySelectorAll('#checklistSection input[type="radio"]:checked');
+            radios.forEach(radio => {
+                checklistData[radio.name] = radio.value;
+            });
+
+            // If any checklist data was collected, serialize it to JSON and add to hidden field
+            if (Object.keys(checklistData).length > 0) {
+                let hiddenInput = document.querySelector('input[name="checklist_template_json"]');
+                if (!hiddenInput) {
+                    hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'checklist_template_json';
+                    form.appendChild(hiddenInput);
+                }
+                hiddenInput.value = JSON.stringify(checklistData);
+            }
+        });
+        
+        categorySelect.addEventListener('change', toggleChecklist);
+        toggleChecklist(); // Initialize on page load
+    });
+</script>

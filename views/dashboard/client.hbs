@@ -1,0 +1,46 @@
+<h1 class="display-5">Welcome, {{user.name}}</h1>
+<p class="lead">Here are your booking requests.</p>
+<hr>
+<h3 class="section-title">My Bookings</h3>
+{{#if bookings}}
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Service</th>
+                <th>Provider</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Documents</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each bookings}}
+            <tr>
+                <td><a href="/services/{{service._id}}">{{service.title}}</a></td>
+                <td>{{provider.name}}</td>
+                <td>{{formatDate bookingDate 'MMMM Do YYYY'}}</td>
+                <td><span class="badge bg-secondary">{{status}}</span></td>
+                <td>
+                    {{#if this.hasChecklist}}
+                        <a href="/bookings/{{this._id}}/checklist/download" class="btn btn-sm btn-primary" target="_blank"><i class="fas fa-file-pdf"></i> Download PDF</a>
+                    {{else}}
+                        <span class="text-muted small">Pending Provider</span>
+                    {{/if}}
+                </td>
+                <td>
+                    <form action="/bookings/{{this._id}}?_method=DELETE" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel/delete this booking?');">
+                        <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+                    </form>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+{{else}}
+<div class="card text-center p-4">
+    <p class="mb-0">You have not made any bookings yet. <a href="/services">Browse services</a> to get started!</p>
+</div>
+{{/if}}

@@ -1,0 +1,130 @@
+{{!-- This file is only for rendering the PDF. No layout, no scripts. --}}
+<div id="checklistForm">
+    <header class="header-grid">
+        <div class="header-col-1">
+            <p><strong>Company Name:</strong><br>Oshikoto Transport & Investment CC</p>
+            <p><strong>Document Type:</strong><br>Health, Safety & Environmental Checklist</p>
+        </div>
+        <div class="header-col-2">
+            <p><strong>Document No./Saved As:</strong> C002</p>
+            <p><strong>Revision Number:</strong> 01</p>
+            <p><strong>Page:</strong> Page 1 of 2</p>
+        </div>
+        <div class="header-col-3">
+            <div class="logo-box">
+                <img src="{{logoUrl}}" alt="Logo" style="max-width:150px;max-height:50px;">
+            </div>
+        </div>
+    </header>
+
+    <h1 class="checklist-title">Daily Fleet Pre-Departure Checklist</h1>
+
+    <div class="info-grid">
+        <div class="info-cell"><strong>Date</strong><p>{{data.date}}</p></div>
+        <div class="info-cell"><strong>Department / Branch</strong><p>{{data.department}}</p></div>
+        <div class="info-cell"><strong>Registration No</strong><p>{{data.registrationNo}}</p></div>
+        <div class="info-cell"><strong>Odometer Reading</strong><p>{{data.odometerReading}}</p></div>
+        <div class="info-cell"><strong>Route</strong><p>{{data.route}}</p></div>
+        <div class="info-cell"><strong>Seats Occupied</strong><p>{{data.seatsOccupied}}</p></div>
+        <div class="info-cell route-cell"><strong>To site</strong><p>{{data.toSite}}</p></div>
+        <div class="info-cell route-cell"><strong>Return</strong><p>{{data.return}}</p></div>
+        <div class="info-cell" style="grid-column: span 4;"><strong>Shift: </strong> {{data.shift}}</div>
+    </div>
+
+    <div class="checklist-container">
+        <table class="checklist-table">
+             <thead>
+                <tr>
+                    <th>Description</th>
+                    <th class="col-class">Class</th>
+                    <th>Dep. Status</th>
+                    <th>Arr. Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="section-header"><td colspan="4"><strong>External Checks:</strong></td></tr>
+                <tr><td>Brake Fluid</td><td class="col-class">B</td><td>{{data.Brake_Fluid.Status}}</td><td>{{data.Brake_Fluid.Arr}}</td></tr>
+                <tr><td>Window Washer Fluid</td><td class="col-class">B</td><td>{{data.Window_Washer_Fluid.Status}}</td><td>{{data.Window_Washer_Fluid.Arr}}</td></tr>
+                <tr><td>Door Handles</td><td class="col-class">B</td><td>{{data.Door_Handles.Status}}</td><td>{{data.Door_Handles.Arr}}</td></tr>
+                <tr><td>License valid</td><td class="col-class">B</td><td>{{data.License_valid.Status}}</td><td>{{data.License_valid.Arr}}</td></tr>
+                <tr><td>Branding Intact</td><td class="col-class">B</td><td>{{data.Branding_Intact.Status}}</td><td>{{data.Branding_Intact.Arr}}</td></tr>
+                <tr><td>Lights - Brake Lights</td><td class="col-class">A</td><td>{{data.Lights_Brake_Lights.Status}}</td><td>{{data.Lights_Brake_Lights.Arr}}</td></tr>
+                <tr class="sub-item"><td class="sub-col">&nbsp;- Brights / Dimmed</td><td class="col-class">A</td><td>{{data.Lights_Brights_Dimmed.Status}}</td><td>{{data.Lights_Brights_Dimmed.Arr}}</td></tr>
+                <tr class="sub-item"><td class="sub-col">&nbsp;- Indicators</td><td class="col-class">A</td><td>{{data.Lights_Indicators.Status}}</td><td>{{data.Lights_Indicators.Arr}}</td></tr>
+                <tr class="sub-item"><td class="sub-col">&nbsp;- Reverse Lights</td><td class="col-class">A</td><td>{{data.Lights_Reverse_Lights.Status}}</td><td>{{data.Lights_Reverse_Lights.Arr}}</td></tr>
+                <tr class="sub-item"><td class="sub-col">&nbsp;- Room lights</td><td class="col-class">B</td><td>{{data.Lights_Room_lights_Ext.Status}}</td><td>{{data.Lights_Room_lights_Ext.Arr}}</td></tr>
+                <tr><td>Fog light</td><td class="col-class">B</td><td>{{data.Fog_light.Status}}</td><td>{{data.Fog_light.Arr}}</td></tr>
+                <tr><td>Oil Leaks</td><td class="col-class">A</td><td>{{data.Oil_Leaks.Status}}</td><td>{{data.Oil_Leaks.Arr}}</td></tr>
+                <tr><td>Oil Level</td><td class="col-class">A</td><td>{{data.Oil_Level.Status}}</td><td>{{data.Oil_Level.Arr}}</td></tr>
+                <tr><td>Spare Wheel</td><td class="col-class">B</td><td>{{data.Spare_Wheel.Status}}</td><td>{{data.Spare_Wheel.Arr}}</td></tr>
+                <tr><td>Tire Tread</td><td class="col-class">A</td><td>{{data.Tire_Tread.Status}}</td><td>{{data.Tire_Tread.Arr}}</td></tr>
+                <tr><td>Power steering fluid</td><td class="col-class">B</td><td>{{data.Power_steering_fluid.Status}}</td><td>{{data.Power_steering_fluid.Arr}}</td></tr>
+                <tr><td>Water Leaks</td><td class="col-class">A</td><td>{{data.Water_Leaks.Status}}</td><td>{{data.Water_Leaks.Arr}}</td></tr>
+                <tr><td>Wheel Nuts</td><td class="col-class">A</td><td>{{data.Wheel_Nuts.Status}}</td><td>{{data.Wheel_Nuts.Arr}}</td></tr>
+                <tr><td>Windows (cracked / chipped)</td><td class="col-class">B</td><td>{{data.Windows.Status}}</td><td>{{data.Windows.Arr}}</td></tr>
+                <tr><td>Wiper Blades</td><td class="col-class">B</td><td>{{data.Wiper_Blades.Status}}</td><td>{{data.Wiper_Blades.Arr}}</td></tr>
+                <tr><td>Triangles (x2) [in case of breakdown]</td><td class="col-class">B</td><td>{{data.Triangles.Status}}</td><td>{{data.Triangles.Arr}}</td></tr>
+                <tr><td>Jack</td><td class="col-class">B</td><td>{{data.Jack.Status}}</td><td>{{data.Jack.Arr}}</td></tr>
+                <tr><td>Reflective Jacket (in case of breakdown - optional)</td><td class="col-class">B</td><td>{{data.Reflective_Jacket.Status}}</td><td>{{data.Reflective_Jacket.Arr}}</td></tr>
+            </tbody>
+        </table>
+
+        <table class="checklist-table">
+             <thead>
+                <tr>
+                    <th>Description</th>
+                    <th class="col-class">Class</th>
+                    <th>Dep. Status</th>
+                    <th>Arr. Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="section-header"><td colspan="4"><strong>External checks (cont.) & Internal Checks</strong></td></tr>
+                <tr><td>Camera working</td><td class="col-class">A</td><td>{{data.Camera_working.Status}}</td><td>{{data.Camera_working.Arr}}</td></tr>
+                <tr><td>Service brake</td><td class="col-class">A</td><td>{{data.Service_brake.Status}}</td><td>{{data.Service_brake.Arr}}</td></tr>
+                <tr><td>Toolbox</td><td class="col-class">B</td><td>{{data.Toolbox.Status}}</td><td>{{data.Toolbox.Arr}}</td></tr>
+                <tr><td>Spare spanners</td><td class="col-class">B</td><td>{{data.Spare_spanners.Status}}</td><td>{{data.Spare_spanners.Arr}}</td></tr>
+                <tr><td>Wheel spanner</td><td class="col-class">B</td><td>{{data.Wheel_spanner.Status}}</td><td>{{data.Wheel_spanner.Arr}}</td></tr>
+                <tr><td>100 km sticker</td><td class="col-class">B</td><td>{{data.['100_km_sticker'].Status}}</td><td>{{data.['100_km_sticker'].Arr}}</td></tr>
+                <tr><td>Log book (MDC)</td><td class="col-class">B</td><td>{{data.Log_book.Status}}</td><td>{{data.Log_book.Arr}}</td></tr>
+                <tr><td>Air leaks</td><td class="col-class">A</td><td>{{data.Air_leaks.Status}}</td><td>{{data.Air_leaks.Arr}}</td></tr>
+                <tr><td>Stop blocks</td><td class="col-class">B</td><td>{{data.Stop_blocks.Status}}</td><td>{{data.Stop_blocks.Arr}}</td></tr>
+                <tr><td>Fleet numbers</td><td class="col-class">B</td><td>{{data.Fleet_numbers.Status}}</td><td>{{data.Fleet_numbers.Arr}}</td></tr>
+                <tr><td>Valid public permit</td><td class="col-class">A</td><td>{{data.Valid_public_permit.Status}}</td><td>{{data.Valid_public_permit.Arr}}</td></tr>
+                <tr><td>Revers hooter</td><td class="col-class">A</td><td>{{data.Revers_hooter.Status}}</td><td>{{data.Revers_hooter.Arr}}</td></tr>
+                <tr><td>Reflector strips</td><td class="col-class">B</td><td>{{data.Reflector_strips.Status}}</td><td>{{data.Reflector_strips.Arr}}</td></tr>
+                <tr><td>Park brake</td><td class="col-class">A</td><td>{{data.Park_brake.Status}}</td><td>{{data.Park_brake.Arr}}</td></tr>
+                <tr><td>Emergency brake</td><td class="col-class">A</td><td>{{data.Emergency_brake.Status}}</td><td>{{data.Emergency_brake.Arr}}</td></tr>
+                <tr><td>Diesel leaks</td><td class="col-class">A</td><td>{{data.Diesel_leaks.Status}}</td><td>{{data.Diesel_leaks.Arr}}</td></tr>
+                <tr><td>Exhaust leaks</td><td class="col-class">B</td><td>{{data.Exhaust_leaks.Status}}</td><td>{{data.Exhaust_leaks.Arr}}</td></tr>
+                <tr class="section-header"><td colspan="4"><strong>Internal Checks:</strong></td></tr>
+                <tr><td>Warning Lights</td><td class="col-class">A</td><td>{{data.Warning_Lights.Status}}</td><td>{{data.Warning_Lights.Arr}}</td></tr>
+                <tr><td>Heat Guage</td><td class="col-class">A</td><td>{{data.Heat_Guage.Status}}</td><td>{{data.Heat_Guage.Arr}}</td></tr>
+                <tr><td>Hooter</td><td class="col-class">A</td><td>{{data.Hooter.Status}}</td><td>{{data.Hooter.Arr}}</td></tr>
+                <tr><td>Seats & Seat Belts</td><td class="col-class">A</td><td>{{data.Seats_Seat_Belts.Status}}</td><td>{{data.Seats_Seat_Belts.Arr}}</td></tr>
+                <tr><td>Mirrors (rear & side)</td><td class="col-class">B</td><td>{{data.Mirrors.Status}}</td><td>{{data.Mirrors.Arr}}</td></tr>
+                <tr><td>Room Lights</td><td class="col-class">B</td><td>{{data.Room_Lights_Int.Status}}</td><td>{{data.Room_Lights_Int.Arr}}</td></tr>
+                <tr><td>Fuel level (%)</td><td class="col-class">B</td><td>{{data.Fuel_level.Status}}</td><td>{{data.Fuel_level.Arr}}</td></tr>
+                <tr><td>Fuel tag</td><td class="col-class">B</td><td>{{data.Fuel_tag.Status}}</td><td>{{data.Fuel_tag.Arr}}</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="remarks-section">
+        <p><strong>REPAIRS OR REMARKS DURING SHIFT</strong></p>
+        <p>{{data.remarks}}</p>
+    </div>
+
+    <div class="signature-area page-2">
+        <table class="signature-table">
+            <tr>
+                <td><strong>DRIVER NAME:</strong> {{data.driverName}}</td>
+                <td><strong>DRIVERS SIGNATURE:</strong> {{data.driverSignature}}</td>
+            </tr>
+            <tr>
+                <td><strong>SUPERVISOR NAME:</strong> {{data.supervisorName}}</td>
+                <td><strong>SUPERVISOR SIGNATURE:</strong> {{data.supervisorSignature}}</td>
+            </tr>
+        </table>
+    </div>
+</div>

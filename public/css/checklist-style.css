@@ -1,0 +1,413 @@
+/* Responsive Version with Ultra-Screen Support (188px+) - No Arrival Column */
+
+:root {
+    --primary-border-color: black;
+    --header-bg: #e0e0e0;
+    --section-bg: #e6e6e6;
+    
+    /* Typography */
+    --font-size-base: 14px;
+    --font-size-small: 12px;
+    --font-size-tiny: 10px; /* New for 188px screens */
+
+    /* Backgrounds */
+    --background-color-base: #64B298;
+    --background-image-url: url('pattern.png');
+    --gradient-overlay: linear-gradient(to bottom, #64B298 0%, #A3CE74 100%);
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 5px; /* Reduced padding */
+    min-width: 188px; /* Enforce minimum width */
+    background-color: var(--background-color-base);
+    background-image: var(--gradient-overlay), var(--background-image-url);
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: auto, cover;
+    background-position: center center;
+}
+
+#checklistForm {
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: var(--background-color-base);
+    background-image: var(--gradient-overlay), var(--background-image-url);
+    background-repeat: repeat;
+    background-attachment: scroll;
+    background-size: auto, cover;
+    padding: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--primary-border-color);
+    box-sizing: border-box;
+}
+
+/* === Force White Backgrounds === */
+.checklist-title, .header-grid, .info-grid, .instructions, 
+.checklist-table th, .section-header td, .other-checks p, 
+.signature-table, .header-col-1, .header-col-2, .header-col-3, 
+.info-cell, .checklist-table td, .remarks-section {
+    background-color: white !important;
+}
+
+/* === Header Grid (1 Column default) === */
+.header-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    border: 1px solid var(--primary-border-color);
+    margin-bottom: 5px;
+    font-size: var(--font-size-small);
+}
+.header-col-1, .header-col-2, .header-col-3 {
+    border-bottom: 1px solid var(--primary-border-color);
+    padding: 5px;
+}
+.header-col-3 { border-bottom: none; text-align: center; }
+.logo-box img { max-width: 100%; height: auto; }
+
+/* === Title === */
+.checklist-title {
+    text-align: center;
+    background-color: var(--header-bg) !important;
+    padding: 5px;
+    border: 1px solid var(--primary-border-color);
+    border-top: none;
+    margin-top: 0;
+    font-size: 1rem;
+}
+
+/* === Info Grid (1 Column default) === */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    border: 1px solid var(--primary-border-color);
+    border-bottom: none;
+}
+.info-cell {
+    border-bottom: 1px solid var(--primary-border-color);
+    padding: 5px;
+    font-size: var(--font-size-small);
+    display: flex;
+    flex-direction: column;
+}
+.info-cell input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 2px;
+}
+
+/* === Shift Toggle (Vertical default for small screens) === */
+.shift-group-wrapper {
+    grid-column: span 1;
+    padding: 5px;
+    border-right: none !important;
+}
+.shift-toggle-group {
+    display: flex;
+    flex-direction: column; /* Stack vertically on mobile */
+    width: 100%;
+    border: 1px solid var(--primary-border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.shift-toggle-group label {
+    flex-grow: 1;
+    text-align: center;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc;
+}
+.shift-toggle-group label:last-child { border-bottom: none; }
+.shift-toggle-group input { display: none; }
+.shift-toggle-group label span {
+    display: block;
+    padding: 5px;
+    background: #f9f9f9;
+    font-size: var(--font-size-tiny);
+}
+.shift-toggle-group input:checked + span {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+/* === Instructions === */
+.instructions {
+    border: 1px solid var(--primary-border-color);
+    border-top: none;
+    padding: 5px;
+    font-size: var(--font-size-small);
+}
+
+/* === Table Layout (Desktop View - Default Structure) === */
+.checklist-container {
+    display: flex;
+    flex-direction: column; /* Stack tables on mobile */
+    gap: 10px;
+}
+.table-wrapper { width: 100%; }
+
+.checklist-table {
+    width: 100%;
+    border: 1px solid var(--primary-border-color);
+    font-size: var(--font-size-small);
+    table-layout: fixed; /* Fixed layout for consistent column widths */
+}
+
+.checklist-table th, .checklist-table td {
+    border: 1px solid var(--primary-border-color);
+    padding: 4px;
+    text-align: left;
+}
+.checklist-table th {
+    background-color: #f0f0f0 !important;
+    text-align: center;
+    font-size: var(--font-size-tiny);
+}
+
+/* Column widths - Adjusted for 4 columns total */
+.col-desc { width: 45%; } /* Increased from 40% */
+.col-class { width: 10%; text-align: center; }
+.col-switch { width: 30%; }
+.col-dep-ref { width: 30%; } /* Increased from 10% */
+/* .col-arr REMOVED */
+
+/* === Switch Styling === */
+.switch-cell {
+    position: relative;
+    min-height: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-switch.three-state {
+    width: 100%;
+    display: block;
+}
+.switch-control {
+    position: relative;
+    width: 100px; /* Default width */
+    height: 24px;
+    margin: 0 auto;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 12px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px; width: 18px;
+    left: 3px; bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+.status-input { opacity: 0; width: 0; height: 0; }
+.status-ok-input:checked ~ .slider { background-color: #4CAF50; } 
+.status-ok-input:checked ~ .slider:before { transform: translateX(0); }
+.status-na-input:checked ~ .slider { background-color: #ccc; }
+.status-na-input:checked ~ .slider:before { transform: translateX(38px); } /* Middle */
+.status-def-input:checked ~ .slider { background-color: #f44336; }
+.status-def-input:checked ~ .slider:before { transform: translateX(76px); } /* Right */
+
+/* Notification */
+.unselected-notification {
+    display: block;
+    color: red;
+    font-size: 9px;
+    margin-top: 2px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+/* === Inputs === */
+.checklist-table input[type="text"],
+.department-ref-input {
+    width: 100%;
+    border: none;
+    background: white;
+    font-size: var(--font-size-tiny);
+    box-sizing: border-box;
+}
+.department-ref-input { background-color: #f7f7f7 !important; }
+
+/* === Other & Remarks === */
+.other-checks { border: 1px solid var(--primary-border-color); margin-bottom: 5px; }
+.other-checks p { background-color: var(--section-bg) !important; padding: 5px; margin: 0; }
+.other-checks table { width: 100%; }
+.other-desc { width: 70%; padding: 5px; font-size: var(--font-size-small); }
+.y-n-switch-cell { width: 30%; text-align: center; }
+
+.remarks-section {
+    border: 1px solid var(--primary-border-color);
+    padding: 5px;
+    font-size: var(--font-size-small);
+}
+.remarks-section textarea { width: 100%; box-sizing: border-box; min-height: 60px; }
+
+.signature-line {
+    display: flex; flex-direction: column; gap: 5px; margin-top: 5px;
+}
+.signature-line p { display: flex; align-items: center; margin: 0; }
+.signature-line input { margin-left: 5px; border: none; border-bottom: 1px dotted black; flex-grow: 1; }
+
+/* === Page 2 Signatures === */
+.signature-area { margin-top: 20px; border: 1px solid var(--primary-border-color); padding: 5px; }
+.signature-table { width: 100%; border: none; }
+.signature-table td { display: block; width: 100%; border: none; padding: 5px 0; }
+.signature-table input { width: 100%; border-bottom: 1px dotted black; border-top: none; border-left: none; border-right: none; }
+
+.submit-section { text-align: center; margin-top: 20px; padding-bottom: 20px; }
+.submit-section button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* ========================================================= */
+/* RESPONSIVE MEDIA QUERIES */
+/* ========================================================= */
+
+/* Tablet (min 500px) */
+@media (min-width: 500px) {
+    .checklist-container { flex-direction: row; }
+    .table-wrapper { width: 49%; }
+    .info-grid { grid-template-columns: 1fr 1fr; }
+    .signature-table td { display: table-cell; width: 50%; }
+    .signature-line { flex-direction: row; }
+    .signature-line p { width: 48%; }
+    .switch-control { width: 120px; }
+    /* Recalculate slider positions for 120px width */
+    .status-na-input:checked ~ .slider:before { transform: translateX(50px); }
+    .status-def-input:checked ~ .slider:before { transform: translateX(98px); }
+}
+
+/* Desktop (min 768px) */
+@media (min-width: 768px) {
+    .header-grid { grid-template-columns: 2fr 1fr 1fr; }
+    .header-col-1, .header-col-2 { border-right: 1px solid #000; border-bottom: none; }
+    .header-col-3 { border-left: 1px solid #000; border-right: none; }
+    .info-grid { grid-template-columns: repeat(4, 1fr); }
+    .shift-group-wrapper { grid-column: span 4; }
+    .checklist-table { table-layout: fixed; }
+}
+
+/* ========================================================= */
+/* ULTRA-SMALL SCREENS (< 400px) - INCLUDING 188px SUPPORT */
+/* ========================================================= */
+
+@media (max-width: 400px) {
+    
+    /* 1. STACK EVERYTHING VERTICALLY */
+    .checklist-container { flex-direction: column; }
+    .table-wrapper { width: 100%; }
+
+    /* 2. TRANSFORM TABLES INTO CARDS (Block Layout) */
+    .checklist-table, .checklist-table thead, .checklist-table tbody, .checklist-table tr, .checklist-table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Hide table headers as they are redundant in card view */
+    .checklist-table thead { display: none; }
+
+    /* Style each row as a card */
+    .checklist-table tbody tr {
+        margin-bottom: 10px;
+        border: 1px solid #000;
+        background-color: white;
+        padding: 5px;
+        position: relative;
+    }
+
+    /* Section headers */
+    .section-header td {
+        background-color: var(--section-bg) !important;
+        font-weight: bold;
+        text-align: center;
+        border-bottom: 2px solid #000;
+        padding: 8px;
+    }
+
+    /* Style cells within the card */
+    .checklist-table tbody td {
+        padding: 5px 0;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+        border-top: none; 
+        border-left: none;
+        border-right: none;
+    }
+
+    /* Description: Make it a header for the card */
+    .checklist-table tbody td:first-child {
+        font-weight: bold;
+        font-size: var(--font-size-small);
+        background-color: #f9f9f9;
+        padding: 5px;
+        border-bottom: 2px solid #ddd;
+    }
+    
+    /* Hide Class column in card view to save space */
+    .col-class { display: none; }
+
+    /* Switch & Inputs: Give them more space */
+    .switch-cell { min-height: 40px; }
+    .toggle-switch.three-state { width: 100%; }
+    
+    /* Make switches full width within the card for easier touch at 188px */
+    .switch-control {
+        width: 90%; 
+        height: 30px; /* Taller for touch */
+    }
+    .slider { border-radius: 15px; }
+    .slider:before {
+        height: 24px;
+        width: 24px;
+        left: 3px;
+        bottom: 3px;
+    }
+    /* Recalculate for 90% width switch (approx 150px on 188px screen) */
+    .status-na-input:checked ~ .slider:before { transform: translateX(58px); }
+    .status-def-input:checked ~ .slider:before { transform: translateX(113px); }
+
+    /* Inputs stack nicely */
+    input[type="text"] {
+        height: 30px; /* Larger touch targets */
+        font-size: 14px;
+        padding: 2px;
+    }
+
+    /* Header Grid Stacking */
+    .header-grid { grid-template-columns: 1fr; }
+    
+    /* Shift Buttons Stack Vertically */
+    .shift-toggle-group {
+        flex-direction: column;
+    }
+    .shift-toggle-group label span {
+        font-size: 12px;
+    }
+
+    /* Fonts */
+    body { font-size: 12px; }
+    .instructions p { margin: 2px 0; }
+    
+    /* Fix "Other Checks" table */
+    .other-checks table { display: block; }
+    .other-checks tr { display: flex; flex-direction: column; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+    .other-desc, .y-n-switch-cell { width: 100%; text-align: left; border: none; }
+}

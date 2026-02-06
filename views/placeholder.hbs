@@ -1,0 +1,113 @@
+<!-- DYNAMIC INTRO SECTION -->
+<div class="service-feature-section card mb-5 border-0 shadow-sm">
+    <div class="row g-0">
+        <div class="col-lg-6">
+            <img src="{{lookup siteContent (concat context '_section_image')}}" class="img-fluid rounded-start" alt="Service Feature" style="min-height: 400px; object-fit: cover; width: 100%;">
+        </div>
+        <div class="col-lg-6 d-flex align-items-center">
+            <div class="card-body p-4 p-lg-5">
+                <h2 class="gradient-text mb-3 display-5">{{lookup siteContent (concat context '_section_title')}}</h2>
+                <p class="lead text-muted" style="text-align: justify;">{{lookup siteContent (concat context '_section_desc')}}</p>
+                <div class="mt-4">
+                    <a href="/contact" class="btn btn-primary">Request a Quote</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center py-4">
+    <a href="/" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left me-2"></i> Return Home</a>
+</div>
+
+<hr class="my-5">
+
+<!-- FEATURED PROJECTS SECTION (DYNAMIC) -->
+{{#if (ifeq siteContent.construction_portfolio_visible 'true')}}
+<section class="container-fluid projects py-5 mt-5">
+    <div class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-5">
+                <div>
+                    <h4 class="text-primary">Our Portfolio</h4>
+                    <h2 class="display-6 mb-4">Featured Namibian Projects</h2>
+                    <!-- Editable Body Text -->
+                    <p class="mb-5">
+                        {{#if siteContent.construction_portfolio_intro}}
+                            {{siteContent.construction_portfolio_intro}}
+                        {{else}}
+                            Experience excellence in execution. We have successfully completed various large-scale projects across the country.
+                        {{/if}}
+                    </p>
+                    
+                    <ul class="nav nav-pills flex-column" id="projectPills" role="tablist">
+                        {{#each (array '1' '2' '3')}}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link {{#if (ifeq this '1')}}active{{/if}} w-100" id="pills-pro-{{this}}" data-bs-toggle="pill" data-bs-target="#project-{{this}}" type="button" role="tab">
+                                <div class="projects-icon">
+                                    {{#if (ifeq this '1')}}<i class="fas fa-industry"></i>{{/if}}
+                                    {{#if (ifeq this '2')}}<i class="fas fa-building"></i>{{/if}}
+                                    {{#if (ifeq this '3')}}<i class="fas fa-road"></i>{{/if}}
+                                </div>
+                                <span>{{lookup ../siteContent (concat 'project' this '_tab_title')}}</span>
+                            </button>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-7">
+                <div class="tab-content" id="projectPillsContent">
+                    {{#each (array '1' '2' '3')}}
+                    <div class="tab-pane fade {{#if (ifeq this '1')}}show active{{/if}}" id="project-{{this}}" role="tabpanel">
+                        <div class="projects-item">
+                            <img src="{{lookup ../siteContent (concat 'project' this '_image')}}" class="img-fluid w-100 rounded" alt="Project Image" style="height: 400px; object-fit: cover;">
+                            <div class="projects-content bg-white p-4 shadow-sm">
+                                <h4 class="mb-3">{{lookup ../siteContent (concat 'project' this '_display_title')}}</h4>
+                                <p>{{lookup ../siteContent (concat 'project' this '_desc')}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{/if}}
+
+{{#if services}}
+<hr class="my-5">
+<section class="container py-5">
+    <div class="text-center mb-4">
+        <h2 class="section-title">Our Services in this Category</h2>
+        <p class="text-muted">Browse services related to this category.</p>
+    </div>
+    <div class="row">
+        {{#each services}}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100">
+                    <img src="{{imageUrl}}" class="card-img-top" alt="{{title}}" style="height: 220px; object-fit: cover;">
+                    {{#if this.onSale}}
+                        <div class="sale-badge">SPECIAL</div>
+                    {{/if}}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{title}}</h5>
+                        {{#if this.onSale}}
+                            <div class="timer-container">
+                                <small>Offer ends in:</small>
+                                <div class="countdown-timer" data-sale-end="{{this.saleEndDate}}"></div>
+                            </div>
+                        {{/if}}
+                        <h6 class="card-subtitle mb-2 text-muted">{{category}}</h6>
+                        <p class="card-text"><strong>Managed by:</strong> {{provider.name}}</p>
+                        <p class="card-text"><strong>Rate:</strong> N$ {{price}} / day</p>
+                        <a href="/services/{{_id}}" class="btn btn-primary mt-auto">View Details & Rent</a>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</section>
+{{/if}}

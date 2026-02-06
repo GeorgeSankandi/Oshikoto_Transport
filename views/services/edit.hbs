@@ -1,0 +1,785 @@
+<main class="main-content">
+<div class="container py-5">
+<link rel="stylesheet" href="/css/checklist-style.css">
+
+<!-- Specific styling for Edit Page Table Layout -->
+<style>
+    .checklist-edit-table {
+        table-layout: fixed;
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    .checklist-edit-table th.col-desc { width: 40%; }
+    .checklist-edit-table th.col-class { width: 10%; text-align: center; }
+    .checklist-edit-table th.col-switch { width: 30%; text-align: center; }
+    .checklist-edit-table th.col-arr { width: 20%; text-align: center; }
+    
+    .checklist-edit-table td {
+        vertical-align: middle;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .checklist-edit-table td.switch-td {
+        background-color: white !important;
+        padding: 0 !important;
+        height: 1px;
+    }
+    
+    .checklist-edit-table .switch-cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%; 
+        min-height: 45px;
+    }
+
+    .checklist-edit-table input[type="time"] {
+        text-align: center;
+        cursor: pointer;
+        background-color: #fff;
+    }
+    
+    .checklist-edit-table input[type="time"].filled::-webkit-calendar-picker-indicator {
+        display: none;
+        -webkit-appearance: none;
+    }
+
+    .sub-item-text {
+        padding-left: 20px;
+    }
+    
+    .class-a {
+        color: #dc3545; /* Red for Class A */
+        font-weight: bold;
+    }
+</style>
+
+<h3 class="section-title">Edit Service</h3>
+<div class="card mb-5">
+    <div class="card-body p-4">
+        <form action="/services/{{service._id}}?_method=PUT" method="POST" enctype="multipart/form-data" id="editServiceForm">
+            
+            <!-- Standard Service Fields -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="title" class="form-label">Service Title</label>
+                    <input type="text" class="form-control" id="title" name="title" value="{{service.title}}" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="price" class="form-label">Price (N$)</label>
+                    <input type="number" class="form-control" id="price" name="price" value="{{service.price}}" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select id="category" name="category" class="form-select">
+                        {{#select service.category}}
+                        <option value="Transportation & Carwash">Transportation & Carwash</option>
+                        <option value="Civil & Building Construction">Civil & Building Construction</option>
+                        <option value="Road Works">Road Works</option>
+                        <option value="Mining Support">Mining Support</option>
+                        <option value="Technical & Repair Services">Technical & Repair Services</option>
+                        <option value="Farming & Agriculture">Farming & Agriculture</option>
+                        <option value="Property Development">Property Development</option>
+                        <option value="General Services & Supply">General Services & Supply</option>
+                        <option value="Catering, Cleaning & Laundry">Catering, Cleaning & Laundry</option>
+                        {{/select}}
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3" required>{{service.description}}</textarea>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="onSale" name="onSale" value="true" {{#if service.onSale}}checked{{/if}}>
+                        <label class="form-check-label" for="onSale"><strong>Put on Sale?</strong></label>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <label for="saleEndDate" class="form-label">Sale End Date</label>
+                    <input type="date" class="form-control" id="saleEndDate" name="saleEndDate" value="{{formatDate service.saleEndDate 'YYYY-MM-DD'}}">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="serviceImage" class="form-label">Service Image (Optional)</label>
+                <input class="form-control" type="file" id="serviceImage" name="serviceImage">
+                {{#if service.imageUrl}}
+                    <div class="mt-2">
+                        <small>Current Image: <a href="{{service.imageUrl}}" target="_blank">View</a></small>
+                    </div>
+                {{/if}}
+            </div>
+
+            <!-- Fleet Docs Section -->
+            <div id="fleetDocsSection" style="display: none;">
+                <hr class="my-4">
+                <h5 class="text-primary">Fleet Documents Management</h5>
+                <div class="row g-3">
+                    {{#each (array '1' '2' '3' '4' '5')}}
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 bg-light h-100">
+                                <label class="fw-bold small mb-2">Document Slot {{this}}</label>
+                                <div class="mb-2">
+                                    <input type="text" name="fleet_doc_{{this}}_name" class="form-control form-control-sm" placeholder="Document Name">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="small text-muted">Upload New / Replace:</label>
+                                    <input type="file" name="fleet_doc_{{this}}" class="form-control form-control-sm" accept=".pdf">
+                                </div>
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" name="delete_fleet_doc_{{this}}" value="true" id="del_doc_{{this}}">
+                                    <label class="form-check-label text-danger small" for="del_doc_{{this}}">Delete/Clear this Document</label>
+                                </div>
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+                <div class="mt-3 p-3 border border-warning rounded bg-warning bg-opacity-10">
+                    <strong>Currently Saved Documents:</strong>
+                    {{#if service.fleetDocs}}
+                        <ul class="mb-0 small">{{#each service.fleetDocs}}<li><a href="{{this.url}}" target="_blank">{{this.name}}</a></li>{{/each}}</ul>
+                    {{else}}
+                        <span class="small text-muted fst-italic">None</span>
+                    {{/if}}
+                </div>
+            </div>
+
+            <!-- Construction Portfolio Section -->
+             <div id="constructionPortfolioSection" style="display: none;">
+                <hr class="my-4">
+                <h5 class="text-primary">Construction Project Portfolio</h5>
+                <p class="small text-muted">Manage showcased projects for this service page.</p>
+                <div class="row g-3">
+                    {{#each (array '1' '2' '3')}}
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 bg-light h-100">
+                            <strong class="d-block mb-2">Project {{this}}</strong>
+                            <div class="mb-2"><label class="small">Title</label><input type="text" name="portfolio_{{this}}_title" class="form-control form-control-sm" ></div>
+                            <div class="mb-2"><label class="small">Description</label><textarea name="portfolio_{{this}}_desc" class="form-control form-control-sm" rows="2"></textarea></div>
+                            <div class="mb-2"><label class="small">Image (Replace)</label><input type="file" name="portfolio_{{this}}_image" class="form-control form-control-sm" accept="image/*"></div>
+                            <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="delete_portfolio_{{this}}" value="true" id="del_port_{{this}}"><label class="form-check-label text-danger small" for="del_port_{{this}}">Remove Project</label></div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+                <div class="mt-3 p-3 border border-info rounded bg-info bg-opacity-10">
+                    <strong>Current Portfolio Items:</strong>
+                    {{#if service.portfolio}}
+                        <ul class="mb-0 small">{{#each service.portfolio}}<li>{{this.title}}</li>{{/each}}</ul>
+                    {{else}}
+                        <span class="small text-muted fst-italic">None</span>
+                    {{/if}}
+                </div>
+            </div>
+
+            <!-- PRE-DEPARTURE CHECKLIST TEMPLATE -->
+            <input type="hidden" name="checklist_template_json" id="checklist_template_json">
+            <div id="checklistSection" style="display: none;">
+                <hr class="my-5">
+                <h4 class="mb-3 text-primary">Pre-Departure Checklist Template Configuration</h4>
+                <div class="alert alert-info py-2"><i class="fas fa-info-circle me-2"></i>Configure the <strong>default</strong> state for the inputs below.</div>
+                
+                <div id="checklistForm" class="border p-3 bg-white">
+                    <!-- Header (Visual Only) -->
+                    <header class="header-grid">
+                        <div class="header-col-1">
+                            <p><strong>Company Name:</strong><br>Oshikoto Transport & Investment CC</p>
+                            <p><strong>Document Type:</strong><br>Health, Safety & Environmental Checklist</p>
+                        </div>
+                        <div class="header-col-2">
+                            <p><strong>Document No./Saved As:</strong> C002</p>
+                            <p><strong>Revision Number:</strong> 01</p>
+                            <p><strong>Page:</strong> Page 1 of 2</p>
+                        </div>
+                        <div class="header-col-3">
+                            <div class="logo-box">
+                                <img src="/images/companylogo.png" alt="Logo" style="max-height: 50px;">
+                            </div>
+                        </div>
+                    </header>
+
+                    <h1 class="checklist-title">Daily Fleet Pre-Departure Checklist</h1>
+
+                    <!-- Info Grid (Enabled) -->
+                    <div class="info-grid">
+                        <div class="info-cell"><strong>Date</strong><input type="date" name="date"></div>
+                        <div class="info-cell"><strong>Department / Branch</strong><input type="text" name="department"></div>
+                        <div class="info-cell"><strong>Registration No</strong><input type="text" name="registrationNo"></div>
+                        <div class="info-cell"><strong>Odometer Reading</strong><input type="number" name="odometerReading"></div>
+                        <div class="info-cell"><strong>Route</strong><input type="text" name="route"></div>
+                        <div class="info-cell"><strong>Seats Occupied</strong><input type="number" name="seatsOccupied"></div>
+                        <div class="info-cell route-cell"><strong>To site</strong><input type="text" name="toSite"></div>
+                        <div class="info-cell route-cell"><strong>Return</strong><input type="text" name="return"></div>
+                        
+                        <!-- Shift Selection -->
+                        <div class="info-cell shift-group-wrapper" style="grid-column: span 4;">
+                            <strong>Shift</strong>
+                            <div class="shift-toggle-group">
+                                <label><input type="radio" name="shift" value="Morning Shifts"><span>Morning Shifts</span></label>
+                                <label><input type="radio" name="shift" value="Afternoon Shift"><span>Afternoon Shift</span></label>
+                                <label><input type="radio" name="shift" value="8 to 8 Shift"><span>8 to 8 Shift</span></label>
+                                <label><input type="radio" name="shift" value="Night Shift"><span>Night Shift</span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="instructions">
+                        <p>* If item is in order, please mark with a "OK"</p>
+                        <p>* If there is a problem with an item, please mark - **DEF** (class A machine is not operated until fix / class B To be rectified at next daily service)</p>
+                        <p>* Mark Fire Extinguisher and First Aid Kit area with (**Y/N**)</p>
+                    </div>
+
+                    <div class="checklist-container">
+                        <!-- Table 1: External Checks (Left Column) -->
+                        <table class="checklist-table checklist-edit-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-desc">Description</th>
+                                    <th class="col-class">Class</th>
+                                    <th class="col-switch">Dep. Status</th>
+                                    <th class="col-arr">Arr. Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="section-header"><td colspan="4"><strong>External Checks:</strong></td></tr>
+                                
+                                {{!-- MANUAL ROW INSERTION START --}}
+                                
+                                <tr>
+                                    <td class="class-a">Brake Fluid</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Brake_Fluid"}}
+                                </tr>
+                                <tr>
+                                    <td>Window Washer Fluid</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Window_Washer_Fluid"}}
+                                </tr>
+                                <tr>
+                                    <td>Door Handles</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Door_Handles"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">License valid</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="License_valid"}}
+                                </tr>
+                                <tr>
+                                    <td>Branding Intact</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Branding_Intact"}}
+                                </tr>
+                                <tr>
+                                    <td>Lights - Brake Lights</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Lights_Brake_Lights"}}
+                                </tr>
+                                <tr>
+                                    <td class="sub-item-text">- Brights / Dimmed</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Lights_Brights_Dimmed"}}
+                                </tr>
+                                <tr>
+                                    <td class="sub-item-text">- Indicators</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Lights_Indicators"}}
+                                </tr>
+                                <tr>
+                                    <td class="sub-item-text">- Reverse Lights</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Lights_Reverse_Lights"}}
+                                </tr>
+                                <tr>
+                                    <td class="sub-item-text">- Room lights</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Lights_Room_lights_Ext"}}
+                                </tr>
+                                <tr>
+                                    <td class="sub-item-text">- Fog light</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Fog_light"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Oil Leaks</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Oil_Leaks"}}
+                                </tr>
+                                <tr>
+                                    <td>Oil Level</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Oil_Level"}}
+                                </tr>
+                                <tr>
+                                    <td>Spare Wheel</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Spare_Wheel"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Tire Tread</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Tire_Tread"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Power steering fluid</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Power_steering_fluid"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Water Leaks</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Water_Leaks"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Wheel Nuts</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Wheel_Nuts"}}
+                                </tr>
+                                <tr>
+                                    <td>Windows (cracked / chipped)</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Windows"}}
+                                </tr>
+                                <tr>
+                                    <td>Wiper Blades</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Wiper_Blades"}}
+                                </tr>
+                                <tr>
+                                    <td>Triangles (x2) [in case of breakdown]</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Triangles"}}
+                                </tr>
+                                <tr>
+                                    <td>Jack</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Jack"}}
+                                </tr>
+                                <tr>
+                                    <td>Reflective Jacket (optional)</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Reflective_Jacket"}}
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Table 2: Right Column -->
+                        <table class="checklist-table checklist-edit-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-desc">Description</th>
+                                    <th class="col-class">Class</th>
+                                    <th class="col-switch">Dep. Status</th>
+                                    <th class="col-arr">Arr. Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="section-header"><td colspan="4"><strong>External checks (continued)</strong></td></tr>
+                                
+                                <tr>
+                                    <td>Camera working</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Camera_working"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Service brake</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Service_brake"}}
+                                </tr>
+                                <tr>
+                                    <td>Toolbox</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Toolbox"}}
+                                </tr>
+                                <tr>
+                                    <td>Spare spanners</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Spare_spanners"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Wheel spanner</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Wheel_spanner"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">100 km sticker</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="100_km_sticker"}}
+                                </tr>
+                                <tr>
+                                    <td>Log book (MDC)</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Log_book"}}
+                                </tr>
+                                <tr>
+                                    <td>Air leaks</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Air_leaks"}}
+                                </tr>
+                                <tr>
+                                    <td>Stop blocks</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Stop_blocks"}}
+                                </tr>
+                                <tr>
+                                    <td>Fleet numbers</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Fleet_numbers"}}
+                                </tr>
+                                <tr>
+                                    <td>Valid public permit</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Valid_public_permit"}}
+                                </tr>
+                                <tr>
+                                    <td>Revers hooter</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Revers_hooter"}}
+                                </tr>
+                                <tr>
+                                    <td>Reflector strips</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Reflector_strips"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Park brake</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Park_brake"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Emergency brake</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Emergency_brake"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Diesel leaks</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Diesel_leaks"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Exhaust leaks</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Exhaust_leaks"}}
+                                </tr>
+
+                                <tr class="section-header"><td colspan="4"><strong>Internal Checks:</strong></td></tr>
+
+                                <tr>
+                                    <td>Warning Lights</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Warning_Lights"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Heat Guage</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Heat_Guage"}}
+                                </tr>
+                                <tr>
+                                    <td>Hooter</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Hooter"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Seats & Seat Belts</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Seats_Seat_Belts"}}
+                                </tr>
+                                <tr>
+                                    <td>Mirrors (rear & side)</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Mirrors"}}
+                                </tr>
+                                <tr>
+                                    <td>Room Lights</td>
+                                    <td class="text-center">B</td>
+                                    {{> _checklist_switch name="Room_Lights_Int"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Fuel level (%)</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Fuel_level"}}
+                                </tr>
+                                <tr>
+                                    <td class="class-a">Fuel tag</td>
+                                    <td class="text-center class-a">A</td>
+                                    {{> _checklist_switch name="Fuel_tag"}}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="other-checks">
+                        <p><strong>Other:</strong></p>
+                        <table>
+                            <tr>
+                                <td class="other-desc">Fire Extinguisher available?</td>
+                                <td class="text-center" style="width: 10%;">B</td>
+                                <td class="y-n-switch-cell">
+                                     <div class="toggle-switch three-state y-n-switch" data-name="Fire_Extinguisher">
+                                        <div class="switch-control">
+                                            <input type="radio" name="Fire_Extinguisher" value="Y" class="status-input status-ok-input">
+                                            <input type="radio" name="Fire_Extinguisher" value="N/A" class="status-input status-na-input" checked>
+                                            <input type="radio" name="Fire_Extinguisher" value="N" class="status-input status-def-input">
+                                            <span class="slider"></span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="other-desc">First aid kit available?</td>
+                                <td class="text-center" style="width: 10%;">B</td>
+                                <td class="y-n-switch-cell">
+                                     <div class="toggle-switch three-state y-n-switch" data-name="First_Aid_Kit">
+                                        <div class="switch-control">
+                                            <input type="radio" name="First_Aid_Kit" value="Y" class="status-input status-ok-input">
+                                            <input type="radio" name="First_Aid_Kit" value="N/A" class="status-input status-na-input" checked>
+                                            <input type="radio" name="First_Aid_Kit" value="N" class="status-input status-def-input">
+                                            <span class="slider"></span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="remarks-section">
+                        <p><strong>REPAIRS OR REMARKS DURING SHIFT</strong></p>
+                        <textarea name="remarks" rows="3" style="background-color: #f9f9f9;"></textarea>
+                        <div class="signature-line">
+                            <p>TIME <input type="time" name="remarks_time"></p>
+                            <p>SIGNATURE <input type="text" name="remarks_signature"></p>
+                        </div>
+                    </div>
+
+                    <div class="signature-area page-2">
+                        <table class="signature-table">
+                            <tr>
+                                <td><strong>DRIVER NAME</strong><input type="text" name="driverName"></td>
+                                <td><strong>DRIVERS SIGNATURE</strong><input type="text" name="driverSignature"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>SUPERVISOR NAME</strong><input type="text" name="supervisorName"></td>
+                                <td><strong>SUPERVISOR SIGNATURE</strong><input type="text" name="supervisorSignature"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+            <button type="submit" class="btn btn-primary btn-lg px-5">Save Changes</button>
+            <a href="/dashboard" class="btn btn-secondary btn-lg">Cancel</a>
+        </form>
+    </div>
+</div>
+</div>
+</main>
+
+{{!-- Inline Partial to reduce code repetition for standard switches --}}
+{{#*inline "_checklist_switch"}}
+    <td class="switch-td">
+        <div class="switch-cell">
+            <div class="toggle-switch three-state" data-name="{{name}}">
+                <div class="switch-control">
+                    <input type="radio" name="{{name}}" value="OK" class="status-input status-ok-input">
+                    <input type="radio" name="{{name}}" value="N/A" class="status-input status-na-input" checked>
+                    <input type="radio" name="{{name}}" value="DEF" class="status-input status-def-input">
+                    <span class="slider"></span>
+                </div>
+            </div>
+        </div>
+    </td>
+    <td class="text-center">
+        <input type="time" name="{{name}}_Arr" class="form-control form-control-sm w-100 time-input">
+    </td>
+{{/inline}}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Elements
+        const catSelect = document.getElementById('category');
+        const fleetSection = document.getElementById('fleetDocsSection');
+        const checkSection = document.getElementById('checklistSection');
+        const portSection = document.getElementById('constructionPortfolioSection');
+        const form = document.getElementById('editServiceForm');
+
+        // 2. Toggle Section Visibility Logic
+        function toggleSections() {
+            const val = (catSelect.value || '').toLowerCase();
+            const isTransport = val.includes('transport') || val.includes('carwash');
+            const isConstruction = val.includes('construction') || val.includes('civil');
+            if(fleetSection) fleetSection.style.display = isTransport ? 'block' : 'none';
+            if(checkSection) checkSection.style.display = isTransport ? 'block' : 'none';
+            if(portSection) portSection.style.display = isConstruction ? 'block' : 'none';
+        }
+        if(catSelect) {
+            catSelect.addEventListener('change', toggleSections);
+            toggleSections(); // Run on page load
+        }
+
+        // --- TIME INPUT VISUAL LOGIC (Hide icon when set) ---
+        const timeInputs = document.querySelectorAll('.time-input');
+        
+        function updateTimeInputVisual(input) {
+            if (input.value) {
+                input.classList.add('filled');
+            } else {
+                input.classList.remove('filled');
+            }
+        }
+
+        timeInputs.forEach(input => {
+            // Initial check
+            updateTimeInputVisual(input);
+            // Listener
+            input.addEventListener('input', () => updateTimeInputVisual(input));
+        });
+
+
+        // --- 3-STATE TOGGLE LOGIC ---
+        const checklistToggles = document.querySelectorAll('#checklistSection .toggle-switch.three-state');
+
+        checklistToggles.forEach(switchContainer => {
+            const name = switchContainer.dataset.name;
+            const isYN = switchContainer.classList.contains('y-n-switch');
+            
+            // Define states based on type
+            const STATES = isYN ? ['Y', 'N/A', 'N'] : ['OK', 'N/A', 'DEF'];
+            
+            const inputs = {};
+            STATES.forEach(state => {
+                const input = switchContainer.querySelector(`input[value="${state}"]`);
+                if (input) inputs[state] = input;
+            });
+
+            // Cycle through states on click
+            switchContainer.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                // 1. Find currently checked
+                let currentValue = null;
+                for (const state of STATES) {
+                    if (inputs[state] && inputs[state].checked) {
+                        currentValue = state;
+                        break;
+                    }
+                }
+
+                // 2. Determine next
+                const currentIndex = currentValue ? STATES.indexOf(currentValue) : -1;
+                const nextIndex = (currentIndex + 1) % STATES.length;
+                const nextState = STATES[nextIndex];
+
+                // 3. Set next
+                if (inputs[nextState]) {
+                    inputs[nextState].checked = true;
+                }
+            });
+        });
+
+        // 3. Pre-fill Checklist Data from Database
+        window.savedTemplate = {};
+        {{#if service.checklistTemplate}}
+            window.savedTemplate = {{{json service.checklistTemplate}}};
+        {{/if}}
+        
+        if(Object.keys(window.savedTemplate).length > 0) {
+            for (const [key, value] of Object.entries(window.savedTemplate)) {
+                
+                // A. Handle Radio Buttons (Status)
+                const radio = document.querySelector(`#checklistSection input[name="${key}"][value="${value.Status || value}"]`);
+                if(radio && radio.type === 'radio') {
+                    radio.checked = true;
+                }
+                // Also check if it is a direct top-level radio (like shift)
+                const topRadio = document.querySelector(`#checklistSection input[name="${key}"][value="${value}"]`);
+                if(topRadio && topRadio.type === 'radio') {
+                    topRadio.checked = true;
+                }
+
+                // B. Handle Time Inputs (Arr)
+                if (value.Arr) {
+                    const timeInput = document.querySelector(`#checklistSection input[name="${key}_Arr"]`);
+                    if(timeInput) {
+                        timeInput.value = value.Arr;
+                        updateTimeInputVisual(timeInput); // Update visual state
+                    }
+                }
+
+                // C. Handle Standard Text/Date Inputs (Top & Bottom sections)
+                // We check if an input with this name exists and is NOT a radio/checkbox
+                const textInput = document.querySelector(`#checklistSection input[name="${key}"]:not([type="radio"]):not([type="checkbox"]), #checklistSection textarea[name="${key}"]`);
+                if (textInput && typeof value === 'string') {
+                    textInput.value = value;
+                }
+            }
+        }
+
+        // 4. Form Submission: Serialize Checklist to JSON
+        if(form) {
+            form.addEventListener('submit', function(e) {
+                if (checkSection && checkSection.style.display !== 'none') {
+                    const data = {};
+                    
+                    // A. Iterate through checklist rows (Status + Arr)
+                    const rows = checkSection.querySelectorAll('table tbody tr');
+                    rows.forEach(row => {
+                        const checkedRadio = row.querySelector('input[type="radio"]:checked');
+                        if (!checkedRadio) return; 
+                        
+                        const name = checkedRadio.name;
+                        const status = checkedRadio.value;
+                        
+                        const timeInput = row.querySelector('input[type="time"]');
+                        const timeVal = timeInput ? timeInput.value : '';
+                        
+                        data[name] = {
+                            Status: status,
+                            Arr: timeVal
+                        };
+                    });
+
+                    // B. Capture Top Info Fields
+                    const infoFields = [
+                        'date', 'department', 'registrationNo', 'odometerReading', 
+                        'route', 'seatsOccupied', 'toSite', 'return'
+                    ];
+                    infoFields.forEach(field => {
+                        const el = checkSection.querySelector(`[name="${field}"]`);
+                        if(el) data[field] = el.value;
+                    });
+
+                    // C. Capture Shift
+                    const shiftRadio = checkSection.querySelector('input[name="shift"]:checked');
+                    if(shiftRadio) data['shift'] = shiftRadio.value;
+
+                    // D. Capture Other Checks (Fire/First Aid)
+                    const otherChecks = ['Fire_Extinguisher', 'First_Aid_Kit'];
+                    otherChecks.forEach(name => {
+                        const radio = checkSection.querySelector(`input[name="${name}"]:checked`);
+                        if(radio) data[name] = radio.value;
+                    });
+
+                    // E. Capture Bottom Fields (Remarks & Signatures)
+                    const bottomFields = [
+                        'remarks', 'remarks_time', 'remarks_signature', 
+                        'driverName', 'driverSignature', 'supervisorName', 'supervisorSignature'
+                    ];
+                    bottomFields.forEach(field => {
+                        const el = checkSection.querySelector(`[name="${field}"]`);
+                        if(el) data[field] = el.value;
+                    });
+
+                    document.getElementById('checklist_template_json').value = JSON.stringify(data);
+                }
+            });
+        }
+    });
+</script>

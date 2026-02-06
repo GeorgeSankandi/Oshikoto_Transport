@@ -1,0 +1,12 @@
+{{#if page}}
+<div class="hero {{#unless (ifeq page 'home')}}hero-sm{{/unless}}" 
+     style="background-image: url('{{lookup siteContent (concat page '_hero_image')}}');">
+  <div class="container">
+    <h1 class="display-3">{{lookup siteContent (concat page '_hero_title')}}</h1>
+    <p class="lead">{{lookup siteContent (concat page '_hero_subtitle')}}</p>
+    {{#if (ifeq page 'home')}}
+        <a class="btn btn-primary btn-lg" href="/services" role="button">Browse All Services</a>
+    {{/if}}
+  </div>
+</div>
+{{/if}}

@@ -1,0 +1,80 @@
+<!-- DYNAMIC INTRO SECTION (Managed by Admin) -->
+<div class="service-feature-section card mb-5 border-0 shadow-sm">
+    <div class="row g-0">
+        <div class="col-lg-6">
+            <img src="{{siteContent.transport_section_image}}" class="img-fluid rounded-start" alt="Transportation Fleet" style="min-height: 400px; object-fit: cover; width: 100%;">
+        </div>
+        <div class="col-lg-6 d-flex align-items-center">
+            <div class="card-body p-4 p-lg-5">
+                <h2 class="gradient-text mb-3 display-5">{{siteContent.transport_section_title}}</h2>
+                <p class="lead text-muted" style="text-align: justify;">{{siteContent.transport_section_desc}}</p>
+                <div class="mt-4">
+                    <a href="/contact" class="btn btn-primary">Book Transport Services</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr class="my-5">
+
+<!-- FLEET LISTING -->
+<h2 class="text-center section-title">Our Transportation Fleet</h2>
+<p class="lead text-muted text-center mb-5">Browse our selection of reliable vehicles available for your transportation needs.</p>
+<div class="row">
+  {{#each services}}
+    {{!-- MODIFIED: Added data-service-id --}}
+    <div class="col-lg-4 col-md-6 mb-4" data-service-id="{{_id}}" data-service-title="{{title}}">
+      <div class="card h-100 shadow-sm border-0">
+        <img src="{{imageUrl}}" class="card-img-top" alt="{{title}}" style="height: 220px; object-fit: cover;">
+         {{#if this.onSale}}
+            <div class="sale-badge">SPECIAL</div>
+        {{/if}}
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{title}}</h5>
+           {{#if this.onSale}}
+                <div class="timer-container">
+                    <small>Offer ends in:</small>
+                    <div class="countdown-timer" data-sale-end="{{this.saleEndDate}}"></div>
+                </div>
+            {{/if}}
+          <h6 class="card-subtitle mb-2 text-muted">{{category}}</h6>
+          <p class="card-text"><strong>Rate:</strong> N$ {{price}} / day</p>
+                    <a href="/services/{{_id}}" class="btn btn-primary mt-auto">View Details & Rent</a>
+
+                    <!-- Fleet Documents (PDF Downloads) - per service card -->
+                    <button class="btn btn-outline-secondary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#fleetDocs-{{_id}}" aria-expanded="false" aria-controls="fleetDocs-{{_id}}">Fleet Documents</button>
+                    <div class="collapse mt-2" id="fleetDocs-{{_id}}">
+                        <div class="list-group">
+                            {{#if this.fleetDocs}}
+                                {{#each this.fleetDocs}}
+                                    <a href="{{this.url}}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-1 rounded border" download>
+                                        <span><i class="fas fa-file-pdf text-danger me-2"></i> {{this.name}}</span>
+                                        <span class="badge bg-primary rounded-pill p-2"><i class="fas fa-download"></i></span>
+                                    </a>
+                                {{/each}}
+                            {{else}}
+                                <div class="p-2 text-muted">No documents are currently available for download.</div>
+                            {{/if}}
+                        </div>
+                    </div>
+        </div>
+      </div>
+    </div>
+  {{else}}
+    <p class="text-center">No vehicles are currently listed in the fleet.</p>
+  {{/each}}
+</div>
+
+<!-- Global downloadable resources removed; fleet documents are per-service -->
+
+<div class="text-center py-5">
+    <a href="/" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i> Return Home</a>
+</div>
+
+<hr class="my-5">
+
+<!-- MODIFIED: Container for A4 Checklist Display -->
+<div id="transportation-checklists-display" class="container mt-5">
+    <!-- Checklists will be dynamically rendered here by main.js -->
+</div>

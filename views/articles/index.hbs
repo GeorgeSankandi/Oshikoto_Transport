@@ -1,0 +1,28 @@
+<div class="row">
+    {{#if articles}}
+        {{#each articles}}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <img src="{{imageUrl}}" class="card-img-top" alt="{{title}}" style="height: 220px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{title}}</h5>
+                    <p class="card-text text-muted">{{snippet}}</p>
+                    <a href="/articles/{{_id}}" class="btn btn-secondary">Read More</a>
+                </div>
+                <div class="card-footer text-muted">
+                    Posted on {{formatDate createdAt 'MMMM Do, YYYY'}}
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    {{else}}
+        <div class="col-12">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">More Content Coming Soon!</h5>
+                    <p class="card-text text-muted">Check back later for helpful articles and news.</p>
+                </div>
+            </div>
+        </div>
+    {{/if}}
+</div>

@@ -1,0 +1,821 @@
+/* --- Corporate Minimalist Design for Oshikoto Transport and Investment CC --- */
+
+/* 1. Color Palette & Root Variables */
+:root {
+  --namibian-blue: #001489;
+  --namibian-red: #DA291C;
+  --namibian-green: #009A44;
+  --namibian-yellow: #FFC72C;
+  --namibian-white: #FFFFFF;
+  --light-gray: #f8f9fa;
+  --dark-charcoal: #343a40;
+  --medium-gray: #6c757d;
+  --border-color: #dee2e6;
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  --gradient-bg: linear-gradient(90deg, var(--namibian-blue) 0%, var(--namibian-red) 100%);
+  --gradient-btn: linear-gradient(45deg, var(--namibian-red) 0%, #a71e14 100%);
+}
+
+/* 2. Typography & Base Styles */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--namibian-white);
+  color: var(--dark-charcoal);
+  font-weight: 400;
+  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--namibian-blue);
+}
+
+a {
+  color: var(--namibian-red);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: var(--dark-charcoal);
+  text-decoration: none;
+}
+
+/* 3. Layout & Spacing */
+.main-content {
+  flex: 1;
+  padding-top: 1rem; /* Reduced padding as hero section has its own */
+  padding-bottom: 5rem;
+}
+
+.section-title {
+  margin-bottom: 3rem;
+  font-weight: 600;
+  color: var(--namibian-blue);
+}
+
+/* 4. Component Styling */
+
+/* =================================================== */
+/* === VISTA-STYLE TOP NAVIGATION (UPDATED) === */
+/* =================================================== */
+
+.navbar {
+  background: #ffffff;
+  border-bottom: 1px solid #546069;
+  box-shadow: inset 0px 0px 0px 1px #a9c5d3;
+  padding: 0.5rem 0;
+  isolation: isolate;
+  position: relative;
+  z-index: 1050;
+}
+
+.navbar-brand {
+  text-shadow: none;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+/* Logo Style */
+.navbar-logo {
+    height: 40px; 
+    width: auto;
+}
+
+/* --- UPDATED: Logo Colors --- */
+.text-osh-yellow {
+    color: var(--namibian-yellow) !important;
+}
+.text-osh-blue {
+    color: var(--namibian-blue) !important;
+}
+
+.navbar .nav-link {
+  position: relative;
+  cursor: pointer;
+  padding: 6px 12px !important;
+  margin: 0 4px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #001489 !important;
+  text-shadow: none;
+  font-weight: 500;
+  transition: 0.25s all, 0.1s translate;
+}
+
+.navbar .nav-link::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border: 1px solid #0d404e;
+  box-shadow: inset 0px 0px 0px 1px #a9c5d3;
+  border-radius: inherit;
+  background: linear-gradient(#b0c9d7, #5a8ba5 50%, #185576 50%, #326c8b);
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: inherit;
+}
+
+.navbar .nav-link:hover::after {
+  opacity: 0.5;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+  color: #ffffff !important;
+}
+
+.navbar .nav-link:active {
+  translate: 1px 1px;
+}
+
+.navbar .nav-link:active::after {
+  opacity: 1;
+  translate: -1px -1px;
+}
+
+/* --- ADDED: Active State to Match Hover/Active Effect --- */
+.navbar .nav-link.active {
+  color: #ffffff !important;
+}
+
+.navbar .nav-link.active::after {
+  opacity: 0.8; /* Slightly less than 'active' click but visible */
+}
+
+/* Dropdown Menu Support for Vista Theme */
+.nav-item.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    background-color: #4e96a2;
+    border: 1px solid #0d404e;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    z-index: 1060 !important;
+    min-width: 250px;
+    display: none;
+}
+
+.dropdown-menu.show {
+    display: block !important;
+}
+
+.dropdown-item {
+    color: #fff !important;
+    text-shadow: 1px 1px #000;
+    padding: 10px 16px;
+    cursor: pointer;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #5a8ba5;
+    color: #fff !important;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 0.25rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-primary {
+  background: var(--gradient-btn);
+  color: var(--namibian-white);
+}
+
+.btn-primary:hover {
+  background-color: #b02116; /* Darker red */
+  color: var(--namibian-white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(218, 41, 28, 0.3);
+}
+
+.btn-secondary {
+    background-color: var(--medium-gray);
+    color: var(--namibian-white);
+}
+
+.btn-secondary:hover {
+    background-color: var(--dark-charcoal);
+    color: var(--namibian-white);
+}
+
+/* Cards */
+.card {
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  color: var(--namibian-blue);
+  font-weight: 600;
+}
+
+.card-img-top {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+/* Forms */
+.form-control, .form-select {
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--namibian-blue);
+    box-shadow: 0 0 0 0.25rem rgba(0, 20, 137, 0.1);
+}
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Hero Section */
+.hero {
+  background: var(--gradient-bg);
+  background-size: cover;
+  background-position: center center;
+  position: relative;
+  padding: 6rem 0;
+  text-align: center;
+  color: var(--namibian-white);
+  z-index: 1;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(78, 150, 162, 0.75); /* Overlay matching services hover color (#4e96a2) */
+    z-index: 1;
+}
+
+.hero .container {
+    position: relative;
+    z-index: 2;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 600;
+    color: var(--namibian-white);
+}
+.hero p.lead {
+    font-size: 1.25rem;
+    color: rgba(255,255,255,0.9);
+    max-width: 700px;
+    margin: 1rem auto 2rem;
+}
+
+.hero-sm {
+    padding: 4rem 0;
+}
+.hero-sm h1 {
+    font-size: 2.5rem;
+}
+
+
+/* Footer (Expanded) */
+.footer {
+  background-color: var(--dark-charcoal);
+  color: var(--light-gray);
+  padding: 4rem 0 2rem; /* Increased padding */
+  font-size: 0.9rem;
+  position: static;
+  width: 100%;
+  margin-top: auto;
+}
+
+.footer h5 {
+    color: var(--namibian-white);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.footer ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer ul li a {
+    color: #adb5bd;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer ul li a:hover {
+    color: var(--namibian-yellow);
+}
+
+/* --- UPDATED: Footer Social Icons in White --- */
+.footer-social-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255,255,255,0.1);
+    color: #ffffff !important; /* Force White Icon Color */
+    border-radius: 50%;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+    border: 1px solid rgba(255,255,255,0.1); /* Subtle white border */
+}
+
+.footer-social-icon i {
+    color: #ffffff !important; /* Ensure child icon is white */
+}
+
+.footer-social-icon:hover {
+    background-color: var(--namibian-blue);
+    border-color: var(--namibian-blue);
+    transform: translateY(-3px);
+    color: #ffffff !important;
+}
+
+/* Tables (for Dashboards) */
+.table {
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+}
+.table thead {
+    background-color: var(--light-gray);
+}
+.table th {
+    font-weight: 600;
+    color: var(--namibian-blue);
+}
+
+/* Alerts / Messages */
+.alert {
+    border-radius: 0.25rem;
+}
+
+/* --- Fleet Documents Section --- */
+#fleetDocsAdmin {
+    border-top: 2px solid var(--border-color);
+    padding-top: 1.5rem;
+}
+
+#fleetDocsAdmin .border {
+    border-color: #ccc !important;
+    background-color: #f9f9f9 !important;
+    transition: all 0.2s ease;
+}
+
+#fleetDocsAdmin .border:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#fleetDocsAdmin .form-control-sm {
+    font-size: 0.875rem;
+    padding: 0.4rem 0.6rem;
+}
+
+#fleetDocsAdmin .form-label {
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    color: var(--namibian-blue);
+}
+
+/* --- Checklist Items Section --- */
+#fleetDocsAdmin .checklist-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+#fleetDocsAdmin .checklist-item {
+    margin-bottom: 0;
+}
+
+#fleetDocsAdmin .checklist-item .input-group-sm {
+    gap: 0.5rem;
+}
+
+#fleetDocsAdmin .checklist-item .form-control-sm {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.5rem;
+}
+
+#fleetDocsAdmin .add-checklist-item {
+    font-size: 0.85rem;
+    padding: 0.35rem 0.75rem;
+}
+
+
+/* --- Sale Timer & Badge Styles --- */
+.sale-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: var(--namibian-yellow);
+    color: var(--dark-charcoal);
+    padding: 3px 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 0.25rem;
+}
+.sale-badge-large {
+    background-color: var(--namibian-yellow);
+    color: var(--dark-charcoal);
+    padding: 5px 15px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 1rem;
+    border-radius: 0.25rem;
+}
+.timer-container, .timer-container-large {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    margin: 0.5rem 0;
+    text-align: center;
+}
+.countdown-timer {
+    font-weight: 600;
+    color: var(--namibian-red);
+    font-size: 1.1rem;
+}
+.countdown-timer span {
+    margin: 0 0.25rem;
+}
+
+
+/* --- AI Chatbot Styles --- */
+#chatbot-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999; /* Ensure it stays on top of everything */
+}
+#chat-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(#b0c9d7, #5a8ba5 50%, #185576 50%, #326c8b);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Slightly larger shadow */
+    transition: transform 0.2s ease;
+}
+#chat-icon:hover {
+    transform: scale(1.1);
+}
+#chat-window {
+    width: 350px;
+    height: 500px;
+    border-radius: 10px;
+    box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy effect */
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    transform-origin: bottom right;
+}
+#chat-window.hidden {
+    opacity: 0;
+    transform: scale(0.5) translateY(20px);
+    pointer-events: none;
+    display: none; /* Force display none to prevent clicking ghost element */
+}
+.chat-header {
+    background: var(--gradient-bg);
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chat-header h5 {
+    margin: 0;
+    color: white;
+}
+#close-chat {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+#chat-body {
+    flex-grow: 1;
+    padding: 1rem;
+    overflow-y: auto;
+}
+.message {
+    margin-bottom: 1rem;
+    display: flex;
+}
+.message p {
+    padding: 0.75rem 1rem;
+    border-radius: 18px;
+    max-width: 80%;
+    margin: 0;
+    line-height: 1.5;
+}
+.message.sent {
+    justify-content: flex-end;
+}
+.message.sent p {
+    background-color: var(--namibian-red);
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+.message.received {
+    justify-content: flex-start;
+}
+.message.received p {
+    background-color: var(--light-gray);
+    color: var(--dark-charcoal);
+    border-bottom-left-radius: 4px;
+}
+p.typing {
+    animation: blink 1s infinite;
+}
+@keyframes blink {
+    50% { opacity: 0.5; }
+}
+.chat-footer {
+    padding: 0.5rem 1rem;
+    border-top: 1px solid var(--border-color);
+}
+#chat-form {
+    display: flex;
+}
+#chat-input {
+    flex-grow: 1;
+    border: none;
+    padding: 0.5rem;
+    background: transparent;
+}
+#chat-input:focus {
+    outline: none;
+}
+#chat-form button {
+    background: none;
+    border: none;
+    color: var(--namibian-blue);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* --- Service Page Feature Section --- */
+.service-feature-section {
+  background-color: var(--namibian-white);
+  border: none;
+  box-shadow: var(--shadow);
+  overflow: hidden; /* Ensures the rounded corners apply to the image */
+}
+
+.service-feature-section img {
+  object-fit: cover;
+  height: 100%;
+  min-height: 350px;
+}
+
+/* --- Gradient Text Effect --- */
+.gradient-text {
+  font-weight: 600;
+  background-image: var(--gradient-bg);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Leaflet Map Container Style */
+#map {
+    height: 450px;
+    width: 100%;
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow);
+    z-index: 1; /* Ensures map is clickable */
+}
+
+/* =================================================== */
+/* === WHITE GRADIENT TEAM CARD (MODERN) === */
+/* =================================================== */
+
+.team-card-modern {
+  --bg-card: #ffffff;
+  --primary: var(--namibian-red);
+  --primary-800: var(--namibian-blue); 
+  --primary-shadow: #000a4d;
+  --light: #d9d9d9;
+  --zinc-800: #18181b;
+  /* Card body gradient: Subtle top-to-bottom white to light gray */
+  --bg-linear-card: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  /* Button gradient */
+  --bg-linear-btn: linear-gradient(0deg, var(--namibian-red) 50%, #ff5e52 125%);
+
+  /* Center Content */
+  text-align: center;
+  align-items: center;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  width: 100%;
+  max-width: 18rem;
+  background: var(--bg-linear-card); /* White Gradient Body */
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.team-card-modern:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.image_container {
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  height: 14rem;
+  background-color: var(--primary-800);
+  border-radius: 0.5rem;
+  /* Center image container */
+  margin: 0 auto;
+}
+
+.team-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.team-card-modern:hover .team-image {
+  transform: scale(1.1);
+}
+
+.team-title-modern {
+  overflow: clip;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--namibian-blue); /* High contrast on white */
+  text-transform: capitalize;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  margin-top: 0.5rem;
+}
+
+.team-role-modern {
+  font-size: 0.85rem;
+  color: var(--medium-gray);
+  font-weight: 500;
+}
+
+.team-action-modern {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.profile-button {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  width: 100%;
+  background-image: var(--bg-linear-btn);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none !important;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 0.5rem;
+  box-shadow: inset 0 0 0.25rem 1px rgba(255,255,255,0.3);
+  transition: all 0.3s ease;
+}
+
+.profile-button:hover {
+  filter: brightness(1.1);
+  color: white;
+}
+
+.profile-button:active {
+    transform: scale(0.98);
+}
+
+/* MODIFIED: Admin Dashboard Override */
+body.admin-bg {
+    background-color: #ffffff !important;
+    background-image: none !important;
+}
+
+body.admin-bg .container {
+    max-width: 100%;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+/* --- NEW: A4 Checklist Display Styles --- */
+.a4-document-container {
+    background: #fff;
+    border: 1px solid #ccc;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    max-width: 800px;
+}
+
+.a4-document-container .a4-header {
+    border-bottom: 2px solid var(--dark-charcoal);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+.a4-document-container .a4-header h4 {
+    font-weight: 700;
+    color: var(--namibian-blue);
+    margin: 0;
+}
+.a4-document-container .a4-header p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--medium-gray);
+}
+.a4-document-container .a4-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+    background-color: var(--light-gray);
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+}
+
+.a4-document-container .a4-info-grid > div {
+    padding: 0.25rem;
+}
+
+@media print {
+  body, .main-content {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+  }
+  .navbar, .footer, .hero, #chatbot-widget, .service-feature-section, .btn {
+    display: none !important;
+  }
+  .a4-document-container {
+    box-shadow: none;
+    border: none;
+    margin: 0;
+    max-width: 100%;
+  }
+}
+
+/* Force White Background for Specific Pages */
+body.force-white-bg {
+    background-color: #ffffff !important;
+    background-image: none !important;
+}

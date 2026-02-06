@@ -1,0 +1,32 @@
+{{>_header}}
+<main class="main-content">
+<div class="container py-5">
+<h3 class="section-title">Edit Article</h3>
+<div class="card">
+    <div class="card-body p-4">
+        <form action="/articles/{{article._id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="title" class="form-label">Article Title</label>
+                <input type="text" class="form-control" id="title" name="title" value="{{article.title}}" required>
+            </div>
+            <div class="mb-3">
+                <label for="snippet" class="form-label">Snippet (Short summary for article list page)</label>
+                <input type="text" class="form-control" id="snippet" name="snippet" value="{{article.snippet}}" required>
+            </div>
+            <div class="mb-3">
+                <label for="serviceImage" class="form-label">Article Image (Leave blank to keep current)</label>
+                <input class="form-control" type="file" id="serviceImage" name="serviceImage">
+                <small>Current Image: {{article.imageUrl}}</small>
+            </div>
+            <div class="mb-3">
+                <label for="content" class="form-label">Full Content</label>
+                <textarea class="form-control" id="content" name="content" rows="10" required>{{article.content}}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="/dashboard" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+</div>
+</main>
+{{>_footer}}

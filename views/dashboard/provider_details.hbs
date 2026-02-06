@@ -1,0 +1,75 @@
+<h1 class="display-5">Provider Details</h1>
+<p class="lead">Viewing profile for <strong>{{provider.name}}</strong>.</p>
+<a href="/dashboard" class="btn btn-secondary mb-4">Back to Admin Dashboard</a>
+<hr>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Provider Information</h5>
+        <p><strong>Name:</strong> {{provider.name}}</p>
+        <p><strong>Email:</strong> {{provider.email}}</p>
+        <p><strong>Member Since:</strong> {{formatDate provider.createdAt 'MMMM Do, YYYY'}}</p>
+    </div>
+</div>
+
+
+<h3 class="mt-5 section-title">Services Offered by {{provider.name}}</h3>
+{{#if services}}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each services}}
+            <tr>
+                <td><a href="/services/{{_id}}">{{title}}</a></td>
+                <td>{{category}}</td>
+                <td>N$ {{price}}</td>
+                <td>
+                    <a href="/services/edit/{{_id}}" class="btn btn-sm btn-secondary">Edit</a>
+                    <form action="/services/{{_id}}?_method=DELETE" method="POST" class="d-inline">
+                        <input type="submit" value="Delete" class="btn btn-sm btn-danger">
+                    </form>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+{{else}}
+<p>{{provider.name}} has not added any services yet.</p>
+{{/if}}
+
+<h3 class="mt-5 section-title">Bookings for {{provider.name}}'s Services</h3>
+{{#if bookings}}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+       <thead>
+            <tr>
+                <th>Client</th>
+                <th>Service</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each bookings}}
+            <tr>
+                <td>{{client.name}}</td>
+                <td>{{service.title}}</td>
+                <td>{{formatDate bookingDate 'MMMM Do YYYY'}}</td>
+                <td>{{status}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+{{else}}
+<p>There are no bookings for this provider's services yet.</p>
+{{/if}}

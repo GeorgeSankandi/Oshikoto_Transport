@@ -1,0 +1,318 @@
+<div class="row gx-5">
+    <div class="col-lg-7">
+        <img src="{{service.imageUrl}}" class="img-fluid rounded mb-4" alt="{{service.title}}" style="box-shadow: var(--shadow); width: 100%; object-fit: cover;">
+        <h1 class="mb-3">{{service.title}}</h1>
+        <p class="text-muted">Category: {{service.category}}</p>
+        <hr class="my-4">
+        <h4>Service Description</h4>
+        <p class="lead" style="font-size: 1.1rem;">{{service.description}}</p>
+        
+        <!-- Fleet Documents Public View -->
+        {{#if service.fleetDocs}}
+        <div class="mt-4">
+            <h5>Attached Fleet Documents</h5>
+            <div class="list-group">
+                {{#each service.fleetDocs}}
+                    <a href="{{this.url}}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" target="_blank">
+                        <span><i class="fas fa-file-pdf text-danger me-2"></i> {{this.name}}</span>
+                        <span class="badge bg-secondary rounded-pill">View PDF</span>
+                    </a>
+                {{/each}}
+            </div>
+        </div>
+        {{/if}}
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm border-0 sticky-top" style="top: 100px;">
+            <div class="card-body p-4">
+                <h4 class="card-title text-center mb-4">Book this Service</h4>
+                {{#if service.onSale}}
+                    <div class="sale-badge-large w-100">ON SALE!</div>
+                    <div class="timer-container-large mb-3">
+                        <small>Offer ends in:</small>
+                        <div class="countdown-timer" data-sale-end="{{service.saleEndDate}}"></div>
+                    </div>
+                {{/if}}
+                <div class="text-center mb-4">
+                    <h2 class="text-danger fw-bold">N$ {{service.price}} <small class="text-muted fs-6">/ day</small></h2>
+                </div>
+                
+                <form action="/bookings" method="POST">
+                    <input type="hidden" name="serviceId" value="{{service._id}}">
+                    <div class="mb-3">
+                        <label for="bookingDate" class="form-label fw-bold">Select Date</label>
+                        <input type="date" class="form-control form-control-lg" id="bookingDate" name="bookingDate" required>
+                    </div>
+                    {{#if user}}
+                        <button type="submit" class="btn btn-primary w-100 btn-lg">Request Booking</button>
+                    {{else}}
+                        <a href="/login" class="btn btn-outline-primary w-100 btn-lg">Login to Book</a>
+                    {{/if}}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Container for Submitted Checklists (Dynamic JS) -->
+<div class="row mt-5">
+    <div class="col-12" id="service-checklists">
+        <!-- JS loads history here -->
+    </div>
+</div>
+
+<!-- ============================================== -->
+<!-- === TEMPLATE DISPLAY (READ ONLY)           === -->
+<!-- ============================================== -->
+{{#if service.checklistTemplate}}
+<div class="row mt-5">
+    <div class="col-12">
+        <h3 class="section-title text-center">Daily Fleet Pre-Departure Checklist Template</h3>
+        <p class="text-center text-muted mb-4">The following checklist items are verified for this vehicle before every departure.</p>
+        
+        <div class="a4-document-container mx-auto" style="max-width: 900px; border: 1px solid #dee2e6; padding: 20px; background: white;">
+            <link rel="stylesheet" href="/css/checklist-style.css">
+            <style>
+                .class-a { color: #dc3545; font-weight: bold; }
+                .sub-item-text { padding-left: 20px; }
+                /* Overrides for View Mode */
+                .info-grid { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid black; margin-bottom: 10px; }
+                .info-cell { border: 1px solid black; padding: 5px; font-size: 12px; }
+                .checklist-table td, .checklist-table th { border: 1px solid black !important; }
+            </style>
+            
+            <!-- HEADER -->
+            <header class="header-grid" style="grid-template-columns: 2fr 1fr 1fr; margin-bottom: 10px;">
+                <div class="header-col-1 p-2 border">
+                    <p class="mb-0"><strong>Company:</strong> Oshikoto Transport & Investment CC</p>
+                    <p class="mb-0"><strong>Doc Type:</strong> HSE Checklist</p>
+                </div>
+                <div class="header-col-2 p-2 border">
+                    <p class="mb-0"><strong>Ref No:</strong> C002</p>
+                    <p class="mb-0"><strong>Rev:</strong> 01</p>
+                </div>
+                <div class="header-col-3 p-2 border text-center">
+                    <img src="/images/companylogo.png" alt="Logo" style="max-height: 40px;">
+                </div>
+            </header>
+
+            <h1 class="text-center p-2 border border-bottom-0 mb-0 bg-light fw-bold h5">Daily Fleet Pre-Departure Checklist</h1>
+
+            <!-- TOP INFO SECTION -->
+            <div class="info-grid">
+                <div class="info-cell"><strong>Date</strong><br>{{#if service.checklistTemplate.date}}{{service.checklistTemplate.date}}{{else}}-{{/if}}</div>
+                <div class="info-cell"><strong>Department / Branch</strong><br>{{#if service.checklistTemplate.department}}{{service.checklistTemplate.department}}{{else}}-{{/if}}</div>
+                <div class="info-cell"><strong>Registration No</strong><br>{{#if service.checklistTemplate.registrationNo}}{{service.checklistTemplate.registrationNo}}{{else}}-{{/if}}</div>
+                <div class="info-cell"><strong>Odometer Reading</strong><br>{{#if service.checklistTemplate.odometerReading}}{{service.checklistTemplate.odometerReading}}{{else}}-{{/if}}</div>
+                
+                <div class="info-cell"><strong>Route</strong><br>{{#if service.checklistTemplate.route}}{{service.checklistTemplate.route}}{{else}}-{{/if}}</div>
+                <div class="info-cell"><strong>Seats Occupied</strong><br>{{#if service.checklistTemplate.seatsOccupied}}{{service.checklistTemplate.seatsOccupied}}{{else}}-{{/if}}</div>
+                <div class="info-cell"><strong>To site</strong><br>{{#if service.checklistTemplate.toSite}}{{service.checklistTemplate.toSite}}{{else}}-{{/if}}</div>
+                <div class="info-cell"><strong>Return</strong><br>{{#if service.checklistTemplate.return}}{{service.checklistTemplate.return}}{{else}}-{{/if}}</div>
+                
+                <div class="info-cell" style="grid-column: span 4;">
+                    <strong>Shift: </strong> 
+                    {{#if service.checklistTemplate.shift}}
+                        <span class="badge bg-primary">{{service.checklistTemplate.shift}}</span>
+                    {{else}}
+                        <span class="text-muted fst-italic">Not specified</span>
+                    {{/if}}
+                </div>
+            </div>
+            
+            <!-- CHECKLIST TABLES -->
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <table class="checklist-table w-100" style="font-size: 12px; table-layout: fixed;">
+                        <thead>
+                            <tr style="background: #f8f9fa;">
+                                <th class="p-1 border" style="width: 70%;">External Item</th>
+                                <th class="p-1 border text-center" style="width: 15%;">Class</th>
+                                <th class="p-1 border text-center" style="width: 15%;">Default</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-1 border class-a">Brake Fluid</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Brake_Fluid"}}</tr>
+                            <tr><td class="p-1 border">Window Washer Fluid</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Window_Washer_Fluid"}}</tr>
+                            <tr><td class="p-1 border">Door Handles</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Door_Handles"}}</tr>
+                            <tr><td class="p-1 border class-a">License valid</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="License_valid"}}</tr>
+                            <tr><td class="p-1 border">Branding Intact</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Branding_Intact"}}</tr>
+                            <tr><td class="p-1 border">Lights - Brake Lights</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Lights_Brake_Lights"}}</tr>
+                            <tr><td class="p-1 border sub-item-text">- Brights / Dimmed</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Lights_Brights_Dimmed"}}</tr>
+                            <tr><td class="p-1 border sub-item-text">- Indicators</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Lights_Indicators"}}</tr>
+                            <tr><td class="p-1 border sub-item-text">- Reverse Lights</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Lights_Reverse_Lights"}}</tr>
+                            <tr><td class="p-1 border sub-item-text">- Room lights</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Lights_Room_lights_Ext"}}</tr>
+                            <tr><td class="p-1 border sub-item-text">- Fog light</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Fog_light"}}</tr>
+                            <tr><td class="p-1 border class-a">Oil Leaks</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Oil_Leaks"}}</tr>
+                            <tr><td class="p-1 border">Oil Level</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Oil_Level"}}</tr>
+                            <tr><td class="p-1 border">Spare Wheel</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Spare_Wheel"}}</tr>
+                            <tr><td class="p-1 border class-a">Tire Tread</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Tire_Tread"}}</tr>
+                            <tr><td class="p-1 border class-a">Power steering fluid</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Power_steering_fluid"}}</tr>
+                            <tr><td class="p-1 border class-a">Water Leaks</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Water_Leaks"}}</tr>
+                            <tr><td class="p-1 border class-a">Wheel Nuts</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Wheel_Nuts"}}</tr>
+                            <tr><td class="p-1 border">Windows (cracked / chipped)</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Windows"}}</tr>
+                            <tr><td class="p-1 border">Wiper Blades</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Wiper_Blades"}}</tr>
+                            <tr><td class="p-1 border">Triangles (x2)</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Triangles"}}</tr>
+                            <tr><td class="p-1 border">Jack</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Jack"}}</tr>
+                            <tr><td class="p-1 border">Reflective Jacket</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Reflective_Jacket"}}</tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <table class="checklist-table w-100" style="font-size: 12px; table-layout: fixed;">
+                        <thead>
+                            <tr style="background: #f8f9fa;">
+                                <th class="p-1 border" style="width: 70%;">Item</th>
+                                <th class="p-1 border text-center" style="width: 15%;">Class</th>
+                                <th class="p-1 border text-center" style="width: 15%;">Default</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-1 border">Camera working</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Camera_working"}}</tr>
+                            <tr><td class="p-1 border class-a">Service brake</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Service_brake"}}</tr>
+                            <tr><td class="p-1 border">Toolbox</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Toolbox"}}</tr>
+                            <tr><td class="p-1 border">Spare spanners</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Spare_spanners"}}</tr>
+                            <tr><td class="p-1 border class-a">Wheel spanner</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Wheel_spanner"}}</tr>
+                            <tr><td class="p-1 border class-a">100 km sticker</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="100_km_sticker"}}</tr>
+                            <tr><td class="p-1 border">Log book (MDC)</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Log_book"}}</tr>
+                            <tr><td class="p-1 border">Air leaks</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Air_leaks"}}</tr>
+                            <tr><td class="p-1 border">Stop blocks</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Stop_blocks"}}</tr>
+                            <tr><td class="p-1 border">Fleet numbers</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Fleet_numbers"}}</tr>
+                            <tr><td class="p-1 border">Valid public permit</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Valid_public_permit"}}</tr>
+                            <tr><td class="p-1 border">Revers hooter</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Revers_hooter"}}</tr>
+                            <tr><td class="p-1 border">Reflector strips</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Reflector_strips"}}</tr>
+                            <tr><td class="p-1 border class-a">Park brake</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Park_brake"}}</tr>
+                            <tr><td class="p-1 border class-a">Emergency brake</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Emergency_brake"}}</tr>
+                            <tr><td class="p-1 border class-a">Diesel leaks</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Diesel_leaks"}}</tr>
+                            <tr><td class="p-1 border class-a">Exhaust leaks</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Exhaust_leaks"}}</tr>
+                            
+                            <!-- Internal Checks -->
+                            <tr class="bg-light"><td colspan="3" class="p-1 border fw-bold text-center">Internal Checks</td></tr>
+                            
+                            <tr><td class="p-1 border">Warning Lights</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Warning_Lights"}}</tr>
+                            <tr><td class="p-1 border class-a">Heat Guage</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Heat_Guage"}}</tr>
+                            <tr><td class="p-1 border">Hooter</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Hooter"}}</tr>
+                            <tr><td class="p-1 border class-a">Seats & Seat Belts</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Seats_Seat_Belts"}}</tr>
+                            <tr><td class="p-1 border">Mirrors (rear & side)</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Mirrors"}}</tr>
+                            <tr><td class="p-1 border">Room Lights</td><td class="p-1 border text-center">B</td>{{> _status_badge name="Room_Lights_Int"}}</tr>
+                            <tr><td class="p-1 border class-a">Fuel level (%)</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Fuel_level"}}</tr>
+                            <tr><td class="p-1 border class-a">Fuel tag</td><td class="p-1 border text-center class-a">A</td>{{> _status_badge name="Fuel_tag"}}</tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Other Section -->
+            <div class="row mt-2">
+                <div class="col-12">
+                    <table class="w-100 border bg-light">
+                        <tr>
+                            <td class="p-2 border">Fire Extinguisher available?</td>
+                            <td class="p-2 border text-center" style="width: 50px;">B</td>
+                            <td class="p-2 border text-center" style="width: 100px;">
+                                {{#with (lookup service.checklistTemplate 'Fire_Extinguisher')}}
+                                    {{#if (ifeq this 'Y')}}<span class="badge bg-success">Yes</span>
+                                    {{else}}{{#if (ifeq this 'N')}}<span class="badge bg-danger">No</span>
+                                    {{else}}<span class="badge bg-secondary opacity-50">N/A</span>{{/if}}{{/if}}
+                                {{else}}<span class="badge bg-secondary opacity-50">N/A</span>{{/with}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 border">First aid kit available?</td>
+                            <td class="p-2 border text-center">B</td>
+                            <td class="p-2 border text-center">
+                                {{#with (lookup service.checklistTemplate 'First_Aid_Kit')}}
+                                    {{#if (ifeq this 'Y')}}<span class="badge bg-success">Yes</span>
+                                    {{else}}{{#if (ifeq this 'N')}}<span class="badge bg-danger">No</span>
+                                    {{else}}<span class="badge bg-secondary opacity-50">N/A</span>{{/if}}{{/if}}
+                                {{else}}<span class="badge bg-secondary opacity-50">N/A</span>{{/with}}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- REMARKS SECTION -->
+            <div class="row mt-2">
+                <div class="col-12">
+                    <div class="border p-2" style="min-height: 80px; background: #fff;">
+                        <p class="mb-1 fw-bold">REPAIRS OR REMARKS DURING SHIFT:</p>
+                        <p class="mb-0 text-muted fst-italic">
+                            {{#if service.checklistTemplate.remarks}}{{service.checklistTemplate.remarks}}{{else}}(No remarks logged){{/if}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIGNATURE SECTION -->
+            <div class="row mt-3">
+                <div class="col-12">
+                    <table class="w-100 border">
+                        <tr>
+                            <td class="p-2 border-end border-bottom" style="width: 50%;">
+                                <strong>DRIVER NAME:</strong><br>
+                                {{#if service.checklistTemplate.driverName}}{{service.checklistTemplate.driverName}}{{else}}-{{/if}}
+                            </td>
+                            <td class="p-2 border-bottom" style="width: 50%;">
+                                <strong>DRIVERS SIGNATURE:</strong><br>
+                                {{#if service.checklistTemplate.driverSignature}}{{service.checklistTemplate.driverSignature}}{{else}}-{{/if}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 border-end">
+                                <strong>SUPERVISOR NAME:</strong><br>
+                                {{#if service.checklistTemplate.supervisorName}}{{service.checklistTemplate.supervisorName}}{{else}}-{{/if}}
+                            </td>
+                            <td class="p-2">
+                                <strong>SUPERVISOR SIGNATURE:</strong><br>
+                                {{#if service.checklistTemplate.supervisorSignature}}{{service.checklistTemplate.supervisorSignature}}{{else}}-{{/if}}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{{/if}}
+
+{{#*inline "_status_badge"}}
+    <td class="p-1 border text-center">
+        {{#with (lookup service.checklistTemplate name)}}
+            {{!-- Check if it is an object with a Status property (New Format) --}}
+            {{#if this.Status}}
+                {{> _badge_visual status=this.Status}}
+            {{else}}
+                {{!-- Check if it is a simple string (Legacy Format) --}}
+                {{#if (or (ifeq this 'OK') (ifeq this 'DEF') (ifeq this 'N/A') (ifeq this 'Y') (ifeq this 'N'))}}
+                    {{> _badge_visual status=this}}
+                {{else}}
+                    <span class="badge bg-secondary" style="opacity:0.5">N/A</span>
+                {{/if}}
+            {{/if}}
+        {{else}}
+            <span class="badge bg-secondary" style="opacity:0.5">N/A</span>
+        {{/with}}
+    </td>
+{{/inline}}
+
+{{#*inline "_badge_visual"}}
+    {{#if (ifeq status 'OK')}}
+        <span class="badge bg-success">OK</span>
+    {{else}}
+        {{#if (ifeq status 'N/A')}}
+            <span class="badge bg-secondary" style="opacity:0.5">N/A</span>
+        {{else}}
+            {{#if (ifeq status 'DEF')}}
+                <span class="badge bg-danger">DEF</span>
+            {{else}}
+                <span class="badge bg-secondary">{{status}}</span>
+            {{/if}}
+        {{/if}}
+    {{/if}}
+{{/inline}}
