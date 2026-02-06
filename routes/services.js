@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { uploadService } = require('../middleware/upload');
-const { ensureAuthenticated, ensureProvider } = require('../middleware/auth');
+const { ensureAuthenticated, ensureProvider, ensureCanEditServices } = require('../middleware/auth'); // MODIFIED: Imported new middleware
 const Service = require('../models/Service');
 
 // @desc    Show all services
@@ -139,12 +139,13 @@ router.get('/:id', async (req, res) => {
 
 // @desc    Show edit page
 // @route   GET /services/edit/:id
-router.get('/edit/:id', ensureProvider, async (req, res) => {
+router.get('/edit/:id', ensureCanEditServices, async (req, res) => { // MODIFIED
     try {
         const service = await Service.findOne({ _id: req.params.id }).lean();
         if (!service) return res.render('error/404');
         
-        if (service.provider.toString() !== req.user.id && req.user.role !== 'admin') {
+        // MODIFIED: Provider-specific check is now handled by middleware
+        if (req.user.role === 'provider' && service.provider.toString() !== req.user.id) {
             req.flash('error_msg', 'Not Authorized');
             return res.redirect('/services');
         }
@@ -157,12 +158,13 @@ router.get('/edit/:id', ensureProvider, async (req, res) => {
 
 // @desc    Update service
 // @route   PUT /services/:id
-router.put('/:id', ensureProvider, uploadService, async (req, res) => {
+router.put('/:id', ensureCanEditServices, uploadService, async (req, res) => { // MODIFIED
     try {
         let service = await Service.findById(req.params.id).lean();
         if (!service) return res.render('error/404');
         
-        if (service.provider.toString() !== req.user.id && req.user.role !== 'admin') {
+        // MODIFIED: Provider-specific check is now handled by middleware
+        if (req.user.role === 'provider' && service.provider.toString() !== req.user.id) {
             req.flash('error_msg', 'Not Authorized');
             return res.redirect('/services');
         }
