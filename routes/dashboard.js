@@ -8,6 +8,8 @@ const User = require('../models/User');
 const Article = require('../models/Article');
 const Checklist = require('../models/Checklist');
 const { uploadSiteContent } = require('../middleware/upload');
+const fs = require('fs'); // ADDED
+const path = require('path'); // ADDED
 
 // @desc    Dashboard Landing
 // @route   GET /dashboard
@@ -15,7 +17,6 @@ router.get('/', ensureAuthenticated, preventCaching, async (req, res) => {
     try {
         if (req.user.role === 'admin') {
             const services = await Service.find().populate('provider').lean();
-            // Fetch ALL bookings
             const bookings = await Booking.find().populate('client').populate('provider').populate('service').sort({ bookingDate: 'desc' }).lean();
             const providers = await User.find({ role: 'provider' }).lean();
             const articles = await Article.find().sort({ createdAt: 'desc' }).lean();
@@ -32,6 +33,20 @@ router.get('/', ensureAuthenticated, preventCaching, async (req, res) => {
                 return acc;
             }, {});
 
+            // --- ADDED: Fetch Uploaded Images ---
+            const uploadsDir = path.join(__dirname, '../public/uploads');
+            let uploadedImages = [];
+            if (fs.existsSync(uploadsDir)) {
+                const files = fs.readdirSync(uploadsDir);
+                // Filter for image files only
+                uploadedImages = files.filter(file => {
+                    return /\.(jpg|jpeg|png|gif|webp)$/i.test(file);
+                }).map(file => ({
+                    name: file,
+                    url: '/uploads/' + file
+                }));
+            }
+
             res.render('dashboard/admin', {
                 user: req.user, 
                 services, 
@@ -40,6 +55,7 @@ router.get('/', ensureAuthenticated, preventCaching, async (req, res) => {
                 allUsers, 
                 siteContent, 
                 articles,
+                uploadedImages, // Pass images to view
                 isAdminPage: true 
             });
         } else if (req.user.role === 'clerk') {
@@ -137,6 +153,29 @@ router.delete('/users/:id', ensureAdmin, async (req, res) => {
     } catch (err) {
         console.error(err);
         res.render('error/500');
+    }
+});
+
+// --- ADDED: Delete Image Route ---
+// @desc    Delete a specific image file from uploads
+// @route   DELETE /dashboard/images/:filename
+router.delete('/images/:filename', ensureAdmin, async (req, res) => {
+    try {
+        // Sanitize filename to prevent directory traversal
+        const filename = path.basename(req.params.filename);
+        const filePath = path.join(__dirname, '../public/uploads', filename);
+
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+            req.flash('success_msg', 'Image deleted successfully');
+        } else {
+            req.flash('error_msg', 'Image not found');
+        }
+        res.redirect('/dashboard');
+    } catch (err) {
+        console.error(err);
+        req.flash('error_msg', 'Error deleting image');
+        res.redirect('/dashboard');
     }
 });
 
