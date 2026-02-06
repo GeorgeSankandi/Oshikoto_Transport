@@ -1,16 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- 1. Chatbot State Persistence (MODIFIED) ---
-    const keepChatOpen = localStorage.getItem('keepChatOpen');
+    // This logic now restores the full chat history, not just the open state.
+    const savedChatHistory = sessionStorage.getItem('chatHistory');
     const chatWindow = document.getElementById('chat-window');
-    if (keepChatOpen === 'true' && chatWindow) {
-        // If the flag is set, open the chat window automatically
+    const chatBody = document.getElementById('chat-body');
+    if (savedChatHistory && chatWindow && chatBody) {
+        // 1. Restore the HTML content of the chat body
+        chatBody.innerHTML = savedChatHistory;
+        
+        // 2. Open the chat window so the user can see the restored history
         chatWindow.style.display = 'flex';
         setTimeout(() => {
             chatWindow.classList.remove('hidden');
+            // 3. Scroll to the bottom of the restored content
+            chatBody.scrollTop = chatBody.scrollHeight;
         }, 10);
-        // Remove the flag so it doesn't reopen on manual reloads
-        localStorage.removeItem('keepChatOpen');
+        
+        // 4. Clean up the session storage to prevent it from loading again on a manual refresh
+        sessionStorage.removeItem('chatHistory');
     }
 
     // --- 2. DOM Persistence (Scroll & Tabs) ---
@@ -47,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeChat = document.getElementById('close-chat');
     const chatForm = document.getElementById('chat-form');
     const chatInput = document.getElementById('chat-input');
-    const chatBody = document.getElementById('chat-body');
+    // Note: chatBody is already declared in section 1
 
     if (chatIcon) {
         chatIcon.addEventListener('click', (e) => {
@@ -140,8 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     chatBody.appendChild(navMsg);
                     chatBody.scrollTop = chatBody.scrollHeight;
 
-                    // MODIFIED: Set the flag before navigating
-                    localStorage.setItem('keepChatOpen', 'true');
+                    // MODIFIED: Save the entire chat history to sessionStorage before navigating
+                    sessionStorage.setItem('chatHistory', chatBody.innerHTML);
 
                     setTimeout(() => {
                         window.location.href = navigateUrl;
@@ -160,9 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
             messageDiv.classList.add('message', type);
             
             const p = document.createElement('p');
-            // Allow basic HTML for formatting if needed, but textContent is safer generally. 
-            // For the bot response we use innerHTML to allow newlines/formatting if markdown is parsed, 
-            // but here we stick to text to prevent XSS, handling newlines with CSS.
             p.innerText = text; 
             
             if(isTyping) p.classList.add('typing');
