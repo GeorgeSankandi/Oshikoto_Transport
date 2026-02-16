@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- 1. Chatbot State Persistence (MODIFIED) ---
-    // This logic now restores the full chat history, not just the open state.
     const savedChatHistory = sessionStorage.getItem('chatHistory');
     const chatWindow = document.getElementById('chat-window');
     const chatBody = document.getElementById('chat-body');
@@ -148,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     chatBody.appendChild(navMsg);
                     chatBody.scrollTop = chatBody.scrollHeight;
 
-                    // MODIFIED: Save the entire chat history to sessionStorage before navigating
+                    // Save the entire chat history to sessionStorage before navigating
                     sessionStorage.setItem('chatHistory', chatBody.innerHTML);
 
                     setTimeout(() => {
@@ -239,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         <h4>Daily Fleet Pre-Departure Checklist</h4>
                                         <p>Submission #: <strong>${idx + 1}</strong></p>
                                      </div>
-                                     <a href="/bookings/${checklist.booking}/checklist/download" class="btn btn-secondary btn-sm" target="_blank">Download PDF</a>
+                                     <button class="btn btn-secondary btn-sm download-checklist-btn" data-booking-id="${checklist.booking}">Download PDF</button>
                                 </div>
                             </div>
                             <div class="a4-info-grid">
@@ -334,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <h4>Daily Fleet Pre-Departure Checklist</h4>
                                     <p>Vehicle: <strong>${checklist.serviceTitle}</strong></p>
                                  </div>
-                                 <a href="/bookings/${checklist.booking}/checklist/download" class="btn btn-secondary btn-sm" target="_blank">View Full PDF</a>
+                                 <button class="btn btn-secondary btn-sm download-checklist-btn" data-booking-id="${checklist.booking}">Download PDF</button>
                             </div>
                         </div>
                         <div class="a4-info-grid">
@@ -369,36 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 7. Dropdown Logic (Desktop/Mobile Fixes) ---
-    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-    dropdownToggles.forEach(toggle => {
-        toggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            const dropdownMenu = toggle.nextElementSibling;
-            if (dropdownMenu && dropdownMenu.classList.contains('dropdown-menu')) {
-                dropdownMenu.classList.toggle('show');
-            }
-        });
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.dropdown')) {
-            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-                menu.classList.remove('show');
-            });
-        }
-    });
-
-    document.querySelectorAll('.dropdown-item').forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (item.href) {
-                window.location.href = item.href;
-            }
-        });
-    });
-
-    // --- 8. Admin Geolocation Logic (Safe Check) ---
+    // --- 7. Admin Geolocation Logic (Safe Check) ---
     const geoBtn = document.getElementById('btn-geo-locate');
     const geoInput = document.getElementById('contact_map_query');
     
@@ -421,4 +391,51 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // --- 8. Client-Side PDF Generation for Transportation Page ---
+    document.addEventListener('click', async function(e) {
+        if (e.target.classList.contains('download-checklist-btn')) {
+            const bookingId = e.target.dataset.bookingId;
+            if (!bookingId) return;
+
+            // Show loading state on the button
+            e.target.disabled = true;
+            e.target.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+            try {
+                // Fetch the full checklist data
+                const response = await fetch(`/api/checklists/${bookingId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch checklist data.');
+                }
+                const data = await response.json();
+                const checklist = data.checklist;
+
+                // We need to manually add the serviceTitle which isn't in the Checklist model
+                // We can find it from the parent card element
+                const card = e.target.closest('.a4-document-container');
+                const titleElement = card.querySelector('p > strong');
+                checklist.serviceTitle = titleElement ? titleElement.innerText : 'Unknown Vehicle';
+
+                // Check if the React PDF generator function is available
+                if (window.ReactPdfGenerator && typeof window.ReactPdfGenerator.generateAndDownloadPdf === 'function') {
+                    // Call the function from our bundled React script
+                    await window.ReactPdfGenerator.generateAndDownloadPdf(checklist);
+                } else {
+                    throw new Error('PDF Generator is not available.');
+                }
+
+            } catch (error) {
+                console.error('PDF Generation Error:', error);
+                alert('Could not generate PDF. Please try again.');
+            } finally {
+                // Restore button state
+                e.target.disabled = false;
+                e.target.innerHTML = 'Download PDF';
+            }
+        }
+    });
+
+    // --- 9. REMOVED ---
+    // The logic for the template download button has been moved to the show.hbs template itself.
 });
