@@ -8,8 +8,8 @@ const User = require('../models/User');
 const Article = require('../models/Article');
 const Checklist = require('../models/Checklist');
 const { uploadSiteContent } = require('../middleware/upload');
-const fs = require('fs'); // ADDED
-const path = require('path'); // ADDED
+const fs = require('fs');
+const path = require('path');
 
 // @desc    Dashboard Landing
 // @route   GET /dashboard
@@ -33,12 +33,10 @@ router.get('/', ensureAuthenticated, preventCaching, async (req, res) => {
                 return acc;
             }, {});
 
-            // --- ADDED: Fetch Uploaded Images ---
             const uploadsDir = path.join(__dirname, '../public/uploads');
             let uploadedImages = [];
             if (fs.existsSync(uploadsDir)) {
                 const files = fs.readdirSync(uploadsDir);
-                // Filter for image files only
                 uploadedImages = files.filter(file => {
                     return /\.(jpg|jpeg|png|gif|webp)$/i.test(file);
                 }).map(file => ({
@@ -55,8 +53,9 @@ router.get('/', ensureAuthenticated, preventCaching, async (req, res) => {
                 allUsers, 
                 siteContent, 
                 articles,
-                uploadedImages, // Pass images to view
-                isAdminPage: true 
+                uploadedImages, 
+                isAdminPage: true,
+                hideNavigation: true // Hide nav for Admin
             });
         } else if (req.user.role === 'clerk') {
             const services = await Service.find().populate('provider').lean();
@@ -65,7 +64,12 @@ router.get('/', ensureAuthenticated, preventCaching, async (req, res) => {
                 const checklist = await Checklist.findOne({ booking: booking._id }).lean();
                 booking.hasChecklist = !!checklist;
             }
-            res.render('dashboard/clerk', { user: req.user, services, bookings });
+            res.render('dashboard/clerk', { 
+                user: req.user, 
+                services, 
+                bookings,
+                hideNavigation: true // Hide nav for Clerk
+            });
         } else if (req.user.role === 'client') {
             const bookings = await Booking.find({ client: req.user.id }).populate('service').populate('provider').sort({ bookingDate: 'desc' }).lean();
             for (const booking of bookings) {
@@ -156,7 +160,6 @@ router.delete('/users/:id', ensureAdmin, async (req, res) => {
     }
 });
 
-// --- ADDED: Delete Image Route ---
 // @desc    Delete a specific image file from uploads
 // @route   DELETE /dashboard/images/:filename
 router.delete('/images/:filename', ensureAdmin, async (req, res) => {
@@ -200,12 +203,12 @@ router.get('/checklist/:bookingId', ensureAuthenticated, async (req, res) => {
         const existingChecklist = await Checklist.findOne({ booking: bookingId }).lean();
 
         // 3. Render the Checklist Form
-        // If existingChecklist is found, populate form. Otherwise, show empty form.
         res.render('checklist_form', { 
             booking,
             checklist: existingChecklist, // Pass existing data if available
             isEditMode: !!existingChecklist,
-            page: 'dashboard'
+            page: 'dashboard',
+            hideNavigation: true // MODIFIED: Hide nav when viewing checklist form
         });
 
     } catch (err) {

@@ -19,11 +19,15 @@ router.post('/', ensureAuthenticated, preventCaching, async (req, res) => {
       return res.redirect('/services');
     }
 
+    const { bookingDate, bookingTime } = req.body;
+    // Combine date and time into a single Date object
+    const combinedDateTime = new Date(`${bookingDate}T${bookingTime}`);
+
     const newBooking = {
       service: req.body.serviceId,
       client: req.user.id,
       provider: service.provider,
-      bookingDate: req.body.bookingDate,
+      bookingDate: combinedDateTime, // Store the combined date and time
       status: 'Pending',
     };
 
@@ -36,7 +40,7 @@ router.post('/', ensureAuthenticated, preventCaching, async (req, res) => {
   }
 });
 
-// @desc    Update booking status (for providers/admins)
+// @desc    Update booking status (for providers/admins/clerks)
 // @route   POST /bookings/status/:id
 router.post('/status/:id', ensureAuthenticated, preventCaching, async (req, res) => {
     try {
@@ -45,8 +49,13 @@ router.post('/status/:id', ensureAuthenticated, preventCaching, async (req, res)
             req.flash('error_msg', 'Booking not found');
             return res.redirect('/dashboard');
         }
-        // Allow Admin or the specific Provider
-        if(booking.provider.toString() !== req.user.id && req.user.role !== 'admin') {
+        
+        // MODIFIED: Authorization now includes the 'clerk' role
+        const isProvider = booking.provider.toString() === req.user.id;
+        const isAdmin = req.user.role === 'admin';
+        const isClerk = req.user.role === 'clerk';
+
+        if (!isProvider && !isAdmin && !isClerk) {
             req.flash('error_msg', 'Not authorized');
             return res.redirect('/dashboard');
         }
@@ -61,6 +70,7 @@ router.post('/status/:id', ensureAuthenticated, preventCaching, async (req, res)
         res.render('error/500');
     }
 });
+
 
 // @desc    Delete Booking
 // @route   DELETE /bookings/:id
@@ -129,7 +139,6 @@ router.get('/:id/checklist/download', ensureAuthenticated, async (req, res) => {
             });
             const page = await browser.newPage();
             
-            // Optional: Include CSS inline if needed, but the HBS template handles basic styles
             await page.setContent(html, { waitUntil: 'domcontentloaded' });
             
             const pdfBuffer = await page.pdf({

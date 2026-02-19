@@ -149,7 +149,10 @@ router.get('/edit/:id', ensureCanEditServices, async (req, res) => { // MODIFIED
             req.flash('error_msg', 'Not Authorized');
             return res.redirect('/services');
         }
-        res.render('services/edit', { service });
+        res.render('services/edit', { 
+            service,
+            hideNavigation: true // MODIFIED: Hide nav on edit page
+        });
     } catch (err) {
         console.error(err);
         return res.render('error/500');

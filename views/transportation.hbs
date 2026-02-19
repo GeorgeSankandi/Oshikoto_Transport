@@ -40,7 +40,10 @@
             {{/if}}
           <h6 class="card-subtitle mb-2 text-muted">{{category}}</h6>
           <p class="card-text"><strong>Rate:</strong> N$ {{price}} / day</p>
-                    <a href="/services/{{_id}}" class="btn btn-primary mt-auto">View Details & Rent</a>
+          
+          {{!-- REMOVED MINI-BOOKING FORM from here --}}
+
+          <a href="/services/{{_id}}" class="btn btn-primary mt-auto">View Details & Rent</a> {{!-- Restored to original --}}
 
                     <!-- Fleet Documents (PDF Downloads) - per service card -->
                     <button class="btn btn-outline-secondary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#fleetDocs-{{_id}}" aria-expanded="false" aria-controls="fleetDocs-{{_id}}">Fleet Documents</button>

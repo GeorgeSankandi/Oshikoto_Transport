@@ -1,4 +1,5 @@
-{{#unless isAdminPage}}
+{{!-- MODIFIED: Use generic hideNavigation flag --}}
+{{#unless hideNavigation}}
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="/">
@@ -14,7 +15,6 @@
                 <li class="nav-item">
                     <a class="nav-link {{#if (ifeq page 'home')}}active{{/if}}" href="/">Home</a>
                 </li>
-                <!-- MODIFIED SECTION: DROPDOWN MENU -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{#if (ifeq page 'services')}}active{{/if}}" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Our Services
@@ -26,7 +26,6 @@
                         <li><a class="dropdown-item" href="/general-supply">General Services & Supply</a></li>
                     </ul>
                 </li>
-                <!-- END MODIFIED SECTION -->
                 <li class="nav-item">
                     <a class="nav-link {{#if (ifeq page 'about')}}active{{/if}}" href="/about">About Us</a>
                 </li>

@@ -1,27 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. Chatbot State Persistence (MODIFIED) ---
+    // --- 1. Chatbot State Persistence (Unchanged) ---
     const savedChatHistory = sessionStorage.getItem('chatHistory');
     const chatWindow = document.getElementById('chat-window');
     const chatBody = document.getElementById('chat-body');
     if (savedChatHistory && chatWindow && chatBody) {
-        // 1. Restore the HTML content of the chat body
         chatBody.innerHTML = savedChatHistory;
-        
-        // 2. Open the chat window so the user can see the restored history
         chatWindow.style.display = 'flex';
         setTimeout(() => {
             chatWindow.classList.remove('hidden');
-            // 3. Scroll to the bottom of the restored content
             chatBody.scrollTop = chatBody.scrollHeight;
         }, 10);
-        
-        // 4. Clean up the session storage to prevent it from loading again on a manual refresh
         sessionStorage.removeItem('chatHistory');
     }
 
-    // --- 2. DOM Persistence (Scroll & Tabs) ---
-    // Restore Scroll Position
+    // --- 2. DOM Persistence (Unchanged) ---
     const sidebarScroll = localStorage.getItem('sidebarScroll');
     if (sidebarScroll) {
         window.scrollTo(0, parseInt(sidebarScroll));
@@ -30,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('sidebarScroll', window.scrollY);
     });
 
-    // Restore Active Bootstrap Tab (for Dashboards)
     var activeTab = localStorage.getItem('activeTab');
     if (activeTab) {
         var tabTrigger = document.querySelector(`button[data-bs-target="${activeTab}"]`);
@@ -40,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Save Active Tab on Click
     var tabLinks = document.querySelectorAll('button[data-bs-toggle="tab"]');
     tabLinks.forEach(function(tabLink) {
         tabLink.addEventListener('shown.bs.tab', function(event) {
@@ -49,49 +40,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- 3. Chatbot Logic (With Navigation Capability) ---
+    // --- 3. Chatbot Logic (Unchanged) ---
     const chatIcon = document.getElementById('chat-icon');
     const closeChat = document.getElementById('close-chat');
     const chatForm = document.getElementById('chat-form');
     const chatInput = document.getElementById('chat-input');
-    // Note: chatBody is already declared in section 1
 
     if (chatIcon) {
         chatIcon.addEventListener('click', (e) => {
             e.stopPropagation(); 
-            
             if (chatWindow.classList.contains('hidden')) {
-                // Open
                 chatWindow.style.display = 'flex'; 
-                setTimeout(() => {
-                    chatWindow.classList.remove('hidden');
-                }, 10);
+                setTimeout(() => { chatWindow.classList.remove('hidden'); }, 10);
             } else {
-                // Close
                 chatWindow.classList.add('hidden');
-                setTimeout(() => {
-                    chatWindow.style.display = 'none';
-                }, 300); 
+                setTimeout(() => { chatWindow.style.display = 'none'; }, 300); 
             }
         });
 
         closeChat.addEventListener('click', (e) => {
             e.stopPropagation();
             chatWindow.classList.add('hidden');
-            setTimeout(() => {
-                chatWindow.style.display = 'none';
-            }, 300);
+            setTimeout(() => { chatWindow.style.display = 'none'; }, 300);
         });
 
         document.addEventListener('click', (e) => {
             if (!chatWindow.classList.contains('hidden') && 
                 !chatWindow.contains(e.target) && 
                 !chatIcon.contains(e.target)) {
-                
                 chatWindow.classList.add('hidden');
-                setTimeout(() => {
-                    chatWindow.style.display = 'none';
-                }, 300);
+                setTimeout(() => { chatWindow.style.display = 'none'; }, 300);
             }
         });
 
@@ -99,110 +77,80 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const userMessage = chatInput.value.trim();
             if (!userMessage) return;
-
-            // Display user's message
             appendMessage(userMessage, 'sent');
             chatInput.value = '';
-
-            // Show typing indicator
             const typingIndicator = appendMessage('...', 'received', true);
 
             try {
-                // Send message to the backend
                 const res = await fetch('/api/chat', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: userMessage }),
                 });
-
-                if (!res.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
+                if (!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json();
                 let replyText = data.reply;
                 let navigateUrl = null;
 
-                // --- NAVIGATION LOGIC ---
-                // Check if the AI wants to navigate
                 if (replyText.includes('||NAVIGATE:')) {
                     const parts = replyText.split('||NAVIGATE:');
-                    replyText = parts[0].trim(); // The text part
-                    const urlPart = parts[1].split('||')[0]; // The URL part
+                    replyText = parts[0].trim();
+                    const urlPart = parts[1].split('||')[0];
                     navigateUrl = urlPart.trim();
                 }
                 
-                // Remove typing indicator and show AI response
                 typingIndicator.remove();
                 appendMessage(replyText, 'received');
 
-                // Perform navigation if requested
                 if (navigateUrl) {
-                    // Create a small visual cue or just redirect
                     const navMsg = document.createElement('div');
                     navMsg.classList.add('message', 'received');
                     navMsg.innerHTML = `<p class="fst-italic text-muted"><i class="fas fa-spinner fa-spin me-1"></i> Opening page...</p>`;
                     chatBody.appendChild(navMsg);
                     chatBody.scrollTop = chatBody.scrollHeight;
-
-                    // Save the entire chat history to sessionStorage before navigating
                     sessionStorage.setItem('chatHistory', chatBody.innerHTML);
-
-                    setTimeout(() => {
-                        window.location.href = navigateUrl;
-                    }, 1000); // 1-second delay so user can read the message first
+                    setTimeout(() => { window.location.href = navigateUrl; }, 1000);
                 }
-
             } catch (error) {
                 typingIndicator.remove();
                 appendMessage('Sorry, I seem to be having trouble right now. Please try again later.', 'received');
-                console.error('Chatbot fetch error:', error);
             }
         });
 
         function appendMessage(text, type, isTyping = false) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', type);
-            
             const p = document.createElement('p');
             p.innerText = text; 
-            
             if(isTyping) p.classList.add('typing');
-
             messageDiv.appendChild(p);
             chatBody.appendChild(messageDiv);
-            chatBody.scrollTop = chatBody.scrollHeight; // Auto-scroll
+            chatBody.scrollTop = chatBody.scrollHeight;
             return messageDiv;
         }
     }
 
-    // --- 4. Live Sale Timer Logic ---
+    // --- 4. Live Sale Timer Logic (Unchanged) ---
     const countdownElements = document.querySelectorAll('.countdown-timer');
     countdownElements.forEach(timer => {
         const saleEndDate = new Date(timer.dataset.saleEnd).getTime();
-
         const interval = setInterval(() => {
             const now = new Date().getTime();
             const distance = saleEndDate - now;
-
             if (distance < 0) {
                 clearInterval(interval);
                 timer.innerHTML = "Sale has ended";
                 return;
             }
-
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
             timer.innerHTML = `<span>${days}d</span> <span>${hours}h</span> <span>${minutes}m</span> <span>${seconds}s</span>`;
         }, 1000);
     });
 
-    // --- 5. Checklist Display Logic (Individual Service Page) ---
+    // --- 5. Checklist Display Logic (MODIFIED FOR SINGLE USER CHECKLIST) ---
     if (window.location.pathname.match(/^\/services\//)) {
         const pathParts = window.location.pathname.split('/');
         const serviceId = pathParts[2];
@@ -214,73 +162,243 @@ document.addEventListener('DOMContentLoaded', () => {
                     const container = document.getElementById('service-checklists');
                     if (!container) return;
 
-                    const checklists = (data && data.checklists) ? data.checklists : [];
+                    // MODIFIED: API now returns a single { checklist: Obj } or { checklist: null }
+                    const checklist = data.checklist;
 
-                    if (checklists.length === 0) {
+                    if (!checklist) {
+                        // If no checklist found for this user, display nothing or a gentle message
                         container.innerHTML = ''; 
                         return;
                     }
 
-                    container.innerHTML = `<h3 class="mt-5 section-title">Completed Pre-Departure Checklists</h3>`;
+                    container.innerHTML = `<h3 class="mt-5 section-title text-center">My Latest Pre-Departure Checklist</h3>`;
 
-                    checklists.forEach((checklist, idx) => {
-                        const doc = document.createElement('div');
-                        doc.className = 'a4-document-container';
+                    // Helper to generate status badges
+                    const getBadge = (formData, key) => {
+                        const item = formData[key];
+                        const status = item ? (item.Status || item) : 'N/A';
+                        
+                        let badgeClass = 'bg-secondary';
+                        if (status === 'OK' || status === 'Y') badgeClass = 'bg-success';
+                        else if (status === 'DEF' || status === 'N') badgeClass = 'bg-danger';
+                        
+                        return `<span class="badge ${badgeClass}">${status}</span>`;
+                    };
 
-                        const getSimple = (key) => (checklist.formData && checklist.formData[key]) ? checklist.formData[key] : '';
-                        const getStatus = (key) => (checklist.formData && checklist.formData[key] && checklist.formData[key].Status) ? checklist.formData[key].Status : 'N/A';
-                        const getArr = (key) => (checklist.formData && checklist.formData[key] && checklist.formData[key].Arr) ? checklist.formData[key].Arr : '-';
+                    const getText = (formData, key) => {
+                        return formData[key] || '-';
+                    };
 
-                        doc.innerHTML = `
-                            <div class="a4-header">
-                                <div class="d-flex justify-content-between align-items-center">
-                                     <div>
-                                        <h4>Daily Fleet Pre-Departure Checklist</h4>
-                                        <p>Submission #: <strong>${idx + 1}</strong></p>
-                                     </div>
-                                     <button class="btn btn-secondary btn-sm download-checklist-btn" data-booking-id="${checklist.booking}">Download PDF</button>
-                                </div>
+                    // MODIFIED: No forEach loop. Render single checklist.
+                    const doc = document.createElement('div');
+                    const d = checklist.formData || {};
+                    const dateStr = getText(d, 'date') || 'undated';
+                    const regStr = getText(d, 'registrationNo') || 'checklist';
+                    const filename = `Checklist_${dateStr}_${regStr}.pdf`;
+                    
+                    doc.className = 'a4-document-container mx-auto mb-5';
+                    doc.style.maxWidth = '900px';
+                    doc.style.border = '1px solid #dee2e6';
+                    doc.style.padding = '20px';
+                    doc.style.backgroundColor = 'white';
+
+                    doc.innerHTML = `
+                        <!-- HEADER -->
+                        <header class="header-grid" style="display: grid; grid-template-columns: 2fr 1fr 1fr; margin-bottom: 10px; border: 1px solid black; font-size: 12px;">
+                            <div class="header-col-1 p-2 border-end" style="border-right: 1px solid black;">
+                                <p class="mb-0"><strong>Company:</strong> Oshikoto Transport & Investment CC</p>
+                                <p class="mb-0"><strong>Doc Type:</strong> HSE Checklist</p>
                             </div>
-                            <div class="a4-info-grid">
-                                <div><strong>Date:</strong> ${getSimple('date') || '-'}</div>
-                                <div><strong>Registration:</strong> ${getSimple('registrationNo') || '-'}</div>
-                                <div><strong>Department:</strong> ${getSimple('department') || '-'}</div>
-                                <div><strong>Shift:</strong> ${getSimple('shift') || '-'}</div>
-                                <div><strong>Route:</strong> ${getSimple('route') || '-'}</div>
-                                <div><strong>Odometer:</strong> ${getSimple('odometerReading') || '-'} km</div>
+                            <div class="header-col-2 p-2 border-end" style="border-right: 1px solid black;">
+                                <p class="mb-0"><strong>Ref No:</strong> C002</p>
+                                <p class="mb-0"><strong>Rev:</strong> 01</p>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table table-sm table-bordered">
-                                    <thead class="table-light">
-                                        <tr><th>Item</th><th>Status</th><th>Arrival Time</th></tr>
+                            <div class="header-col-3 p-2 text-center">
+                                <img src="/images/companylogo.png" alt="Logo" style="max-height: 40px;">
+                            </div>
+                        </header>
+
+                        <h1 class="text-center p-2 border border-bottom-0 mb-0 bg-light fw-bold h5" style="border: 1px solid black; background-color: #e0e0e0;">Daily Fleet Pre-Departure Checklist</h1>
+
+                        <!-- TOP INFO SECTION -->
+                        <div class="info-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid black; margin-bottom: 10px; font-size: 12px;">
+                            <div class="info-cell p-1 border-end border-bottom" style="border-right: 1px solid black; border-bottom: 1px solid black;"><strong>Date</strong><br>${getText(d, 'date')}</div>
+                            <div class="info-cell p-1 border-end border-bottom" style="border-right: 1px solid black; border-bottom: 1px solid black;"><strong>Dept/Branch</strong><br>${getText(d, 'department')}</div>
+                            <div class="info-cell p-1 border-end border-bottom" style="border-right: 1px solid black; border-bottom: 1px solid black;"><strong>Reg No</strong><br>${getText(d, 'registrationNo')}</div>
+                            <div class="info-cell p-1 border-bottom" style="border-bottom: 1px solid black;"><strong>Odometer</strong><br>${getText(d, 'odometerReading')}</div>
+                            
+                            <div class="info-cell p-1 border-end border-bottom" style="border-right: 1px solid black; border-bottom: 1px solid black;"><strong>Route</strong><br>${getText(d, 'route')}</div>
+                            <div class="info-cell p-1 border-end border-bottom" style="border-right: 1px solid black; border-bottom: 1px solid black;"><strong>Seats</strong><br>${getText(d, 'seatsOccupied')}</div>
+                            <div class="info-cell p-1 border-end border-bottom" style="border-right: 1px solid black; border-bottom: 1px solid black;"><strong>To Site</strong><br>${getText(d, 'toSite')}</div>
+                            <div class="info-cell p-1 border-bottom" style="border-bottom: 1px solid black;"><strong>Return</strong><br>${getText(d, 'return')}</div>
+                            
+                            <div class="info-cell p-1" style="grid-column: span 4;">
+                                <strong>Shift: </strong> <span class="badge bg-primary">${getText(d, 'shift')}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- CHECKLIST TABLES -->
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-md-6">
+                                <table class="checklist-table w-100" style="font-size: 12px; table-layout: fixed; border-collapse: collapse; border: 1px solid black;">
+                                    <thead>
+                                        <tr style="background: #f8f9fa;">
+                                            <th class="p-1 border" style="width: 70%;">External Item</th>
+                                            <th class="p-1 border text-center" style="width: 15%;">Class</th>
+                                            <th class="p-1 border text-center" style="width: 15%;">Status</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                        ${[
-                                            ['Brake Fluid', 'Brake_Fluid'], ['Window Washer Fluid', 'Window_Washer_Fluid'],
-                                            ['Door Handles', 'Door_Handles'], ['License valid', 'License_valid'],
-                                            ['Branding Intact', 'Branding_Intact'], ['Lights - Brake Lights', 'Lights_Brake_Lights'],
-                                            ['Lights - Brights / Dimmed', 'Lights_Brights_Dimmed'], ['Lights - Indicators', 'Lights_Indicators'], ['Lights - Reverse Lights', 'Lights_Reverse_Lights'], ['Lights - Room lights', 'Lights_Room_lights_Ext'],
-                                            ['Fog light', 'Fog_light'], ['Oil Leaks', 'Oil_Leaks'], ['Oil Level', 'Oil_Level'], ['Spare Wheel', 'Spare_Wheel'],
-                                            ['Tire Tread', 'Tire_Tread'], ['Power steering fluid', 'Power_steering_fluid'], ['Water Leaks', 'Water_Leaks'], ['Wheel Nuts', 'Wheel_Nuts'],
-                                            ['Windows', 'Windows'], ['Wiper Blades', 'Wiper_Blades'], ['Triangles', 'Triangles'], ['Jack', 'Jack'], ['Reflective Jacket', 'Reflective_Jacket']
-                                        ].map(([label, key]) => `
-                                            <tr>
-                                                <td>${label}</td>
-                                                <td>${getStatus(key)}</td>
-                                                <td>${getArr(key)}</td>
-                                            </tr>
-                                        `).join('')}
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Brake Fluid</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Brake_Fluid')}</td></tr>
+                                        <tr><td class="p-1 border">Window Washer Fluid</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Window_Washer_Fluid')}</td></tr>
+                                        <tr><td class="p-1 border">Door Handles</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Door_Handles')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">License valid</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'License_valid')}</td></tr>
+                                        <tr><td class="p-1 border">Branding Intact</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Branding_Intact')}</td></tr>
+                                        <tr><td class="p-1 border">Lights - Brake Lights</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Lights_Brake_Lights')}</td></tr>
+                                        <tr><td class="p-1 border" style="padding-left: 20px;">- Brights / Dimmed</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Lights_Brights_Dimmed')}</td></tr>
+                                        <tr><td class="p-1 border" style="padding-left: 20px;">- Indicators</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Lights_Indicators')}</td></tr>
+                                        <tr><td class="p-1 border" style="padding-left: 20px;">- Reverse Lights</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Lights_Reverse_Lights')}</td></tr>
+                                        <tr><td class="p-1 border" style="padding-left: 20px;">- Room lights</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Lights_Room_lights_Ext')}</td></tr>
+                                        <tr><td class="p-1 border" style="padding-left: 20px;">- Fog light</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Fog_light')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Oil Leaks</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Oil_Leaks')}</td></tr>
+                                        <tr><td class="p-1 border">Oil Level</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Oil_Level')}</td></tr>
+                                        <tr><td class="p-1 border">Spare Wheel</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Spare_Wheel')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Tire Tread</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Tire_Tread')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Power steering fluid</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Power_steering_fluid')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Water Leaks</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Water_Leaks')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Wheel Nuts</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Wheel_Nuts')}</td></tr>
+                                        <tr><td class="p-1 border">Windows</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Windows')}</td></tr>
+                                        <tr><td class="p-1 border">Wiper Blades</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Wiper_Blades')}</td></tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="remarks-section mt-3">
-                                <p><strong>REPAIRS OR REMARKS DURING SHIFT</strong></p>
-                                <p>${(checklist.formData && checklist.formData.remarks) ? checklist.formData.remarks : ''}</p>
-                            </div>
-                        `;
 
-                        container.appendChild(doc);
-                    });
+                            <!-- Right Column -->
+                            <div class="col-md-6">
+                                <table class="checklist-table w-100" style="font-size: 12px; table-layout: fixed; border-collapse: collapse; border: 1px solid black;">
+                                    <thead>
+                                        <tr style="background: #f8f9fa;">
+                                            <th class="p-1 border" style="width: 70%;">Item</th>
+                                            <th class="p-1 border text-center" style="width: 15%;">Class</th>
+                                            <th class="p-1 border text-center" style="width: 15%;">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td class="p-1 border">Camera working</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Camera_working')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Service brake</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Service_brake')}</td></tr>
+                                        <tr><td class="p-1 border">Toolbox</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Toolbox')}</td></tr>
+                                        <tr><td class="p-1 border">Spare spanners</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Spare_spanners')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Wheel spanner</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Wheel_spanner')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">100 km sticker</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, '100_km_sticker')}</td></tr>
+                                        <tr><td class="p-1 border">Log book (MDC)</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Log_book')}</td></tr>
+                                        <tr><td class="p-1 border">Air leaks</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Air_leaks')}</td></tr>
+                                        <tr><td class="p-1 border">Stop blocks</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Stop_blocks')}</td></tr>
+                                        <tr><td class="p-1 border">Fleet numbers</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Fleet_numbers')}</td></tr>
+                                        <tr><td class="p-1 border">Valid public permit</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Valid_public_permit')}</td></tr>
+                                        <tr><td class="p-1 border">Revers hooter</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Revers_hooter')}</td></tr>
+                                        <tr><td class="p-1 border">Reflector strips</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Reflector_strips')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Park brake</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Park_brake')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Emergency brake</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Emergency_brake')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Diesel leaks</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Diesel_leaks')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Exhaust leaks</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Exhaust_leaks')}</td></tr>
+                                        <tr><td class="p-1 border">Triangles (x2)</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Triangles')}</td></tr>
+                                        <tr><td class="p-1 border">Jack</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Jack')}</td></tr>
+                                        <tr><td class="p-1 border">Reflective Jacket</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Reflective_Jacket')}</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Page Break for PDF continuity visual (Screen) and Page Break (PDF) -->
+                        <div style="border-bottom: 1px dashed #ccc; margin: 20px 0; page-break-before: always;"></div>
+
+                        <!-- INTERNAL CHECKS (Page 2 content in template) -->
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="checklist-table w-100" style="font-size: 12px; table-layout: fixed; border-collapse: collapse; border: 1px solid black;">
+                                    <thead>
+                                        <tr style="background: #f8f9fa;">
+                                            <th class="p-1 border" style="width: 70%;">Item</th>
+                                            <th class="p-1 border text-center" style="width: 15%;">Class</th>
+                                            <th class="p-1 border text-center" style="width: 15%;">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bg-light"><td colspan="3" class="p-1 border fw-bold text-center">Internal Checks</td></tr>
+                                        <tr><td class="p-1 border">Warning Lights</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Warning_Lights')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Heat Guage</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Heat_Guage')}</td></tr>
+                                        <tr><td class="p-1 border">Hooter</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Hooter')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Seats & Seat Belts</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Seats_Seat_Belts')}</td></tr>
+                                        <tr><td class="p-1 border">Mirrors (rear & side)</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Mirrors')}</td></tr>
+                                        <tr><td class="p-1 border">Room Lights</td><td class="p-1 border text-center">B</td><td class="p-1 border text-center">${getBadge(d, 'Room_Lights_Int')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Fuel level (%)</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Fuel_level')}</td></tr>
+                                        <tr><td class="p-1 border class-a" style="color: #dc3545; font-weight: bold;">Fuel tag</td><td class="p-1 border text-center class-a" style="color: #dc3545; font-weight: bold;">A</td><td class="p-1 border text-center">${getBadge(d, 'Fuel_tag')}</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- OTHER SECTION -->
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <table class="w-100 border bg-light" style="border: 1px solid black; font-size: 12px;">
+                                    <tr>
+                                        <td class="p-2 border" style="border: 1px solid black;">Fire Extinguisher available?</td>
+                                        <td class="p-2 border text-center" style="width: 50px; border: 1px solid black;">B</td>
+                                        <td class="p-2 border text-center" style="width: 100px; border: 1px solid black;">${getBadge(d, 'Fire_Extinguisher')}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 border" style="border: 1px solid black;">First aid kit available?</td>
+                                        <td class="p-2 border text-center" style="border: 1px solid black;">B</td>
+                                        <td class="p-2 border text-center" style="border: 1px solid black;">${getBadge(d, 'First_Aid_Kit')}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- REMARKS SECTION -->
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <div class="border p-2" style="min-height: 80px; background: #fff; border: 1px solid black;">
+                                    <p class="mb-1 fw-bold" style="font-size: 12px;">REPAIRS OR REMARKS DURING SHIFT:</p>
+                                    <p class="mb-0 text-muted fst-italic" style="font-size: 12px;">${getText(d, 'remarks')}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SIGNATURE SECTION -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <table class="w-100 border" style="border: 1px solid black; font-size: 12px;">
+                                    <tr>
+                                        <td class="p-2 border-end border-bottom" style="width: 50%; border-right: 1px solid black; border-bottom: 1px solid black;">
+                                            <strong>DRIVER NAME:</strong><br>${getText(d, 'driverName')}
+                                        </td>
+                                        <td class="p-2 border-bottom" style="width: 50%; border-bottom: 1px solid black;">
+                                            <strong>DRIVERS SIGNATURE:</strong><br>${getText(d, 'driverSignature')}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 border-end" style="border-right: 1px solid black;">
+                                            <strong>SUPERVISOR NAME:</strong><br>${getText(d, 'supervisorName')}
+                                        </td>
+                                        <td class="p-2">
+                                            <strong>SUPERVISOR SIGNATURE:</strong><br>${getText(d, 'supervisorSignature')}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="text-end mt-3 no-print" data-html2canvas-ignore="true">
+                            <button class="btn btn-outline-danger download-pdf-btn" data-filename="${filename}">
+                                <i class="fas fa-file-pdf me-2"></i>Download as PDF
+                            </button>
+                        </div>
+                    `;
+
+                    container.appendChild(doc);
                 })
                 .catch(err => {
                     console.error('Failed to fetch checklists:', err);
@@ -288,90 +406,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 6. Checklist Display Logic (Main Transportation Page) ---
-    if (window.location.pathname === '/transportation') {
-        const displayContainer = document.getElementById('transportation-checklists-display');
-        const serviceCards = document.querySelectorAll('[data-service-id]');
+    // --- 6. Client-Side PDF Generation (Updated for html2pdf) ---
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.download-pdf-btn')) {
+            const btn = e.target.closest('.download-pdf-btn');
+            const content = btn.closest('.a4-document-container'); // The specific card
+            const filename = btn.dataset.filename || 'Checklist.pdf';
+            
+            // Options for html2pdf
+            const opt = {
+                margin: 0.2, // Small margin
+                filename: filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            
+            // Visual feedback
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating...';
+            btn.disabled = true;
 
-        if (displayContainer && serviceCards.length > 0) {
-            const serviceInfo = Array.from(serviceCards).map(card => ({
-                id: card.dataset.serviceId,
-                title: card.dataset.serviceTitle
-            }));
-
-            Promise.all(serviceInfo.map(async info => {
-                try {
-                    const res = await fetch(`/api/services/${info.id}/checklists`);
-                    if (!res.ok) return { checklists: [], serviceTitle: info.title };
-                    const data = await res.json();
-                    return { ...(data || { checklists: [] }), serviceTitle: info.title };
-                } catch (err) {
-                    console.error('Error fetching checklists for service', info.id, err);
-                    return { checklists: [], serviceTitle: info.title };
-                }
-            })).then(results => {
-                const allChecklists = results.flatMap(result => (result.checklists || []).map(checklist => ({ ...checklist, serviceTitle: result.serviceTitle })));
-
-                if (allChecklists.length === 0) {
-                    displayContainer.innerHTML = '';
-                    return;
-                }
-
-                displayContainer.innerHTML = `<h2 class="text-center section-title">Recent Pre-Departure Checklists</h2>`;
-
-                allChecklists.forEach(checklist => {
-                    const doc = document.createElement('div');
-                    doc.className = 'a4-document-container';
-
-                    const getData = (key) => (checklist.formData && checklist.formData[key]) ? checklist.formData[key] : 'N/A';
-                    const getStatus = (key) => (checklist.formData && checklist.formData[key] && checklist.formData[key].Status) ? checklist.formData[key].Status : 'N/A';
-
-                    doc.innerHTML = `
-                        <div class="a4-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                 <div>
-                                    <h4>Daily Fleet Pre-Departure Checklist</h4>
-                                    <p>Vehicle: <strong>${checklist.serviceTitle}</strong></p>
-                                 </div>
-                                 <button class="btn btn-secondary btn-sm download-checklist-btn" data-booking-id="${checklist.booking}">Download PDF</button>
-                            </div>
-                        </div>
-                        <div class="a4-info-grid">
-                            <div><strong>Date:</strong> ${getData('date')}</div>
-                            <div><strong>Registration:</strong> ${getData('registrationNo')}</div>
-                            <div><strong>Department:</strong> ${getData('department')}</div>
-                            <div><strong>Shift:</strong> ${getData('shift')}</div>
-                            <div><strong>Route:</strong> ${getData('route')}</div>
-                            <div><strong>Odometer:</strong> ${getData('odometerReading')} km</div>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-sm table-bordered">
-                                <thead class="table-light">
-                                    <tr><th>Item</th><th>Status</th><th>Item</th><th>Status</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td>Brake Fluid</td><td>${getStatus('Brake_Fluid')}</td><td>Camera working</td><td>${getStatus('Camera_working')}</td></tr>
-                                    <tr><td>Wiper Blades</td><td>${getStatus('Wiper_Blades')}</td><td>Service brake</td><td>${getStatus('Service_brake')}</td></tr>
-                                    <tr><td>Oil Level</td><td>${getStatus('Oil_Level')}</td><td>Warning Lights</td><td>${getStatus('Warning_Lights')}</td></tr>
-                                    <tr><td>Tire Tread</td><td>${getStatus('Tire_Tread')}</td><td>Heat Guage</td><td>${getStatus('Heat_Guage')}</td></tr>
-                                    <tr><td>Wheel Nuts</td><td>${getStatus('Wheel_Nuts')}</td><td>Seats & Seat Belts</td><td>${getStatus('Seats_Seat_Belts')}</td></tr>
-                                    <tr><td>Lights - Brake Lights</td><td>${getStatus('Lights_Brake_Lights')}</td><td>Fuel level (%)</td><td>${getStatus('Fuel_level')}</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    `;
-                    displayContainer.appendChild(doc);
+            // Generate PDF
+            if (typeof html2pdf === 'function') {
+                html2pdf().from(content).set(opt).save().finally(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
                 });
-            }).catch(err => {
-                console.error('Failed to fetch some checklists:', err);
-            });
+            } else {
+                alert('PDF generator library (html2pdf) not loaded. Please refresh the page.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         }
-    }
+    });
 
-    // --- 7. Admin Geolocation Logic (Safe Check) ---
+    // --- 7. Admin Geolocation Logic (Unchanged) ---
     const geoBtn = document.getElementById('btn-geo-locate');
     const geoInput = document.getElementById('contact_map_query');
-    
     if (geoBtn && geoInput) {
         geoBtn.addEventListener('click', function() {
             if (navigator.geolocation) {
@@ -391,51 +463,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    // --- 8. Client-Side PDF Generation for Transportation Page ---
-    document.addEventListener('click', async function(e) {
-        if (e.target.classList.contains('download-checklist-btn')) {
-            const bookingId = e.target.dataset.bookingId;
-            if (!bookingId) return;
-
-            // Show loading state on the button
-            e.target.disabled = true;
-            e.target.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
-
-            try {
-                // Fetch the full checklist data
-                const response = await fetch(`/api/checklists/${bookingId}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch checklist data.');
-                }
-                const data = await response.json();
-                const checklist = data.checklist;
-
-                // We need to manually add the serviceTitle which isn't in the Checklist model
-                // We can find it from the parent card element
-                const card = e.target.closest('.a4-document-container');
-                const titleElement = card.querySelector('p > strong');
-                checklist.serviceTitle = titleElement ? titleElement.innerText : 'Unknown Vehicle';
-
-                // Check if the React PDF generator function is available
-                if (window.ReactPdfGenerator && typeof window.ReactPdfGenerator.generateAndDownloadPdf === 'function') {
-                    // Call the function from our bundled React script
-                    await window.ReactPdfGenerator.generateAndDownloadPdf(checklist);
-                } else {
-                    throw new Error('PDF Generator is not available.');
-                }
-
-            } catch (error) {
-                console.error('PDF Generation Error:', error);
-                alert('Could not generate PDF. Please try again.');
-            } finally {
-                // Restore button state
-                e.target.disabled = false;
-                e.target.innerHTML = 'Download PDF';
-            }
-        }
-    });
-
-    // --- 9. REMOVED ---
-    // The logic for the template download button has been moved to the show.hbs template itself.
 });

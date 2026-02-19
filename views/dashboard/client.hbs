@@ -9,7 +9,7 @@
             <tr>
                 <th>Service</th>
                 <th>Provider</th>
-                <th>Date</th>
+                <th>Date & Time</th>
                 <th>Status</th>
                 <th>Documents</th>
                 <th>Actions</th>
@@ -20,7 +20,7 @@
             <tr>
                 <td><a href="/services/{{service._id}}">{{service.title}}</a></td>
                 <td>{{provider.name}}</td>
-                <td>{{formatDate bookingDate 'MMMM Do YYYY'}}</td>
+                <td>{{formatDate bookingDate 'MMMM Do YYYY, HH:mm'}}</td> {{!-- MODIFIED --}}
                 <td><span class="badge bg-secondary">{{status}}</span></td>
                 <td>
                     {{#if this.hasChecklist}}

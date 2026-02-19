@@ -30,22 +30,29 @@ router.post('/register', async (req, res) => {
     errors.push({ msg: 'Passwords do not match' });
   }
 
-  // --- STRICT PASSWORD VALIDATION ---
+  // --- UPDATED STRICT PASSWORD VALIDATION ---
+  
   // 1. Length >= 8
   if (password.length < 8) {
     errors.push({ msg: 'Password must be at least 8 characters long.' });
   }
 
-  // 2. One or two capital letters
+  // 2. Minimum 1 Capital Letter
   const upperCaseCount = (password.match(/[A-Z]/g) || []).length;
-  if (upperCaseCount < 1 || upperCaseCount > 2) {
-      errors.push({ msg: 'Password must contain exactly one or two uppercase letters.' });
+  if (upperCaseCount < 1) {
+      errors.push({ msg: 'Password must contain at least one uppercase letter.' });
   }
 
-  // 3. Two or more numbers
+  // 3. Minimum 2 Numbers
   const numberCount = (password.match(/[0-9]/g) || []).length;
   if (numberCount < 2) {
-      errors.push({ msg: 'Password must contain 2 or more numbers.' });
+      errors.push({ msg: 'Password must contain at least 2 numbers.' });
+  }
+
+  // 4. Minimum 1 Unique Character (Symbol)
+  const symbolCount = (password.match(/[^a-zA-Z0-9]/g) || []).length;
+  if (symbolCount < 1) {
+      errors.push({ msg: 'Password must contain at least 1 unique character (symbol).' });
   }
 
   if (errors.length > 0) {

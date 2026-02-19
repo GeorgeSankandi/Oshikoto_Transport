@@ -31,7 +31,6 @@
   <li class="nav-item" role="presentation">
     <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services-pane" type="button" role="tab" aria-controls="services-pane" aria-selected="false">Services</button>
   </li>
-  <!-- ADDED: Gallery Tab -->
   <li class="nav-item" role="presentation">
     <button class="nav-link" id="gallery-tab" data-bs-toggle="tab" data-bs-target="#gallery-pane" type="button" role="tab" aria-controls="gallery-pane" aria-selected="false">Image Gallery</button>
   </li>
@@ -53,7 +52,7 @@
                 <th>Client</th>
                 <th>Provider</th>
                 <th>Service</th>
-                <th>Status</th>
+                <th>Status / Action</th>
                 <th>Checklist</th>
                 <th>Actions</th>
             </tr>
@@ -64,9 +63,46 @@
                 <td>{{client.name}}</td>
                 <td>{{provider.name}}</td>
                 <td>{{service.title}}</td>
-                <td><span class="badge {{#if (ifeq status 'Confirmed')}}bg-success{{else}}bg-secondary{{/if}}">{{status}}</span></td>
+                
+                {{!-- Interactive Status Column --}}
                 <td>
-                    <a href="/dashboard/checklist/{{this._id}}" class="btn btn-sm {{#if this.hasChecklist}}btn-warning{{else}}btn-outline-primary{{/if}}">
+                    {{!-- 1. Status Badge --}}
+                    <div class="mb-2">
+                        {{#if (ifeq status 'Pending')}}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {{/if}}
+                        {{#if (ifeq status 'Confirmed')}}
+                            <span class="badge bg-success">Confirmed</span>
+                        {{/if}}
+                        {{#if (ifeq status 'Completed')}}
+                            <span class="badge bg-primary">Completed</span>
+                        {{/if}}
+                        {{#if (ifeq status 'Cancelled')}}
+                            <span class="badge bg-danger">Cancelled</span>
+                        {{/if}}
+                    </div>
+
+                    {{!-- 2. Approval Dropdown --}}
+                    <form action="/bookings/status/{{_id}}" method="POST">
+                        <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="Pending" {{#if (ifeq status 'Pending')}}selected{{/if}}>Pending</option>
+                            
+                            {{!-- Disable 'Confirmed' if checklist is missing --}}
+                            <option value="Confirmed" 
+                                {{#if (ifeq status 'Confirmed')}}selected{{/if}}
+                                {{#unless hasChecklist}}disabled{{/unless}}>
+                                Confirmed {{#unless hasChecklist}}(No Checklist){{/unless}}
+                            </option>
+                            
+                            <option value="Completed" {{#if (ifeq status 'Completed')}}selected{{/if}}>Completed</option>
+                            <option value="Cancelled" {{#if (ifeq status 'Cancelled')}}selected{{/if}}>Cancelled</option>
+                        </select>
+                    </form>
+                </td>
+
+                {{!-- Checklist Buttons --}}
+                <td>
+                    <a href="/dashboard/checklist/{{this._id}}" class="btn btn-sm {{#if this.hasChecklist}}btn-warning{{else}}btn-outline-primary{{/if}} mb-1">
                         <i class="fas {{#if this.hasChecklist}}fa-edit{{else}}fa-plus{{/if}} me-1"></i>
                         {{#if this.hasChecklist}}View/Edit{{else}}Fill{{/if}}
                     </a>
@@ -77,6 +113,8 @@
                     </a>
                     {{/if}}
                 </td>
+
+                {{!-- Delete Action --}}
                 <td>
                     <form action="/bookings/{{this._id}}?_method=DELETE" method="POST" class="d-inline" onsubmit="return confirm('Are you sure? This will delete the booking and any associated checklist permanently.');">
                         <button type="submit" class="btn btn-sm btn-danger" title="Delete Booking">
@@ -1262,4 +1300,4 @@
         }
     });
 </script>
-</div>
+</html>
