@@ -81,7 +81,7 @@ app.use(async (req, res, next) => {
         
         const defaults = {
             home_hero_title: 'Find Trusted Tradespeople, Fast.',
-            home_hero_subtitle: 'The modern, reliable way to book verified technical and mechanical services across Namibia.',
+            home_hero_subtitle: 'The modern, reliable way to find trusted technical and mechanical services across Namibia.',
             home_hero_image: '/images/default-hero.jpg',
             about_hero_title: 'About Oshikoto Transport',
             about_hero_subtitle: 'Your trusted partner for professional technical and mechanical services in Namibia.',
@@ -125,9 +125,7 @@ app.use('/', require('./routes/pages'));
 app.use('/services', require('./routes/services'));
 app.use('/articles', require('./routes/articles')); 
 app.use('/dashboard', require('./routes/dashboard'));
-app.use('/bookings', require('./routes/bookings'));
 app.use('/api', require('./routes/api'));
-app.use('/api', require('./routes/api_checklists'));
 app.use('/provider', require('./routes/provider'));
 
 const PORT = process.env.PORT || 3000;

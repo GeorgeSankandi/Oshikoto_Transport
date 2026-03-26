@@ -21,6 +21,16 @@
         </div>
     </div>
 
+    <!-- NEW: Transportation Fleet Intro (From Admin Dashboard) -->
+    {{#if siteContent.about_transport_text}}
+    <div class="row align-items-center mb-5 gx-5">
+        <div class="col-12 text-center px-4">
+            <h2 class="section-title">Our Transportation Capabilities</h2>
+            <p class="lead text-muted">{{siteContent.about_transport_text}}</p>
+        </div>
+    </div>
+    {{/if}}
+
     <!-- Why Choose Us Section -->
     <div class="text-center my-5 py-5 bg-light rounded">
          <h2 class="section-title">Why Choose Us?</h2>
@@ -44,7 +54,6 @@
          </div>
     </div>
 </div>
-
 
 <!-- Our Team Section (Modern Card Style) -->
 <section class="team-section py-5">

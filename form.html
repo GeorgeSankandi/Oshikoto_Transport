@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Work Ticket - OSHI-015667</title>
+    <style>
+        :root {
+            --brand-blue: #1a3a6c;
+            --border-color: #8ba4c7;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #525659;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: #0099ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        button.reset { background: #e74c3c; }
+        
+        .a4-container {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
+
+        /* Input and Selector Styling */
+        input, select, textarea {
+            width: 100%;
+            border: none;
+            font-family: inherit;
+            font-size: 13px;
+            color: #2c3e50;
+            background: transparent;
+            outline: none;
+            appearance: none; /* Removes default arrows for a cleaner look */
+            -webkit-appearance: none;
+        }
+        
+        /* Show arrows only on hover/focus for cleaner UI */
+        select:focus, select:hover {
+            background: #f0f7ff;
+            appearance: auto;
+            -webkit-appearance: menulist;
+        }
+
+        input:focus { background: #f0f7ff; }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        .logo-section { width: 55%; border: 1px solid #ddd; padding: 10px; text-align: center; }
+        .contact-section { width: 40%; text-align: right; font-size: 14px; }
+        .contact-section h2 { color: var(--brand-blue); margin: 0 0 10px 0; font-size: 15px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 6px;
+            text-align: left;
+            font-size: 13px;
+        }
+        .emergency-table { width: 280px; float: right; margin-bottom: 20px; }
+        .label-cell { background-color: #f9f9f9; width: 30%; font-weight: bold; }
+
+        @media print {
+            .controls { display: none; }
+            body { background: none; padding: 0; }
+            .a4-container { box-shadow: none; border: none; }
+            input, select, textarea { border: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="controls">
+    <button onclick="window.print()">Print / Save as PDF</button>
+    <button class="reset" onclick="resetForm()">Reset Form</button>
+</div>
+
+<div class="a4-container" id="ticketForm">
+    <div class="header-top">
+        <div class="logo-section">
+            <div style="font-size: 24px; font-weight: bold; color: #ffd700; text-shadow: 1px 1px #000;">HIKOTO TRANSPORT</div>
+            <div style="font-size: 11px;">[Bus Image Placeholder]</div>
+        </div>
+        <div class="contact-section">
+            <div style="font-size: 16px;">WORK TICKET</div>
+            <h2>OSHIKOTO TRANSPROT INVESTMENTS CC</h2>
+            Po Box 1423, Otjiwarongo [cite: 4]<br>
+            Tel No: 067304460 [cite: 5]<br>
+            Email: oshikotowalvis01@gmail.com [cite: 6]
+        </div>
+    </div>
+
+    <table class="emergency-table">
+        <tr>
+            <td class="label-cell">Emergency number</td>
+            <td>0814763606<br>0813056788 [cite: 7]</td>
+        </tr>
+    </table>
+    <div style="clear:both"></div>
+
+    <div style="display: flex; gap: 20px;">
+        <table style="width: 50%;">
+            <tr><td class="label-cell">Seats</td><td><input type="number" value="14"></td></tr>
+            <tr><td class="label-cell">Vehicle type</td><td><input type="text" value="Toyota Quantum"></td></tr>
+            <tr><td class="label-cell">Reg No</td><td><input type="text" placeholder="Enter Reg No"></td></tr>
+            <tr><td class="label-cell">Fleet No</td><td><input type="text" value="N 13308 OT"></td></tr>
+        </table>
+        <table style="width: 50%;">
+            <tr><td class="label-cell">TICKET NO</td><td><input type="text" value="OSHI-015667"></td></tr>
+            <tr><td class="label-cell" style="height: 60px;">Driver name</td><td><textarea rows="3"></textarea></td></tr>
+        </table>
+    </div>
+
+    <table>
+        <tr><td class="label-cell" style="width: 25%;">Shifts</td><td><input type="text" value="Day shift"></td></tr>
+    </table>
+    <table>
+        <tr><td class="label-cell" style="width: 25%;">First pick up.</td><td><input type="text" value="Walvis Bay"></td></tr>
+        <tr><td class="label-cell">Destination</td><td><input type="text" value="Swakopmund & Rossing mine"></td></tr>
+    </table>
+
+    <table id="itinerary">
+        <tr style="background: #eee;">
+            <th style="width: 20%;">Date</th>
+            <th style="width: 15%;">Time</th>
+            <th style="width: 15%;">Type</th>
+            <th>Location</th>
+        </tr>
+        <tr>
+            <td><input type="date" value="2026-02-23"></td>
+            <td><input type="time" value="05:00"></td>
+            <td>
+                <select>
+                    <option selected>Start</option>
+                    <option>Pick up.</option>
+                    <option>Arrival</option>
+                    <option>Leave</option>
+                    <option>Finish</option>
+                </select>
+            </td>
+            <td><input type="text" value="Walvis Bay Depot"></td>
+        </tr>
+        <tr>
+            <td><input type="date"></td>
+            <td><input type="time" value="05:30"></td>
+            <td>
+                <select>
+                    <option>Start</option>
+                    <option selected>Pick up.</option>
+                    <option>Arrival</option>
+                    <option>Leave</option>
+                    <option>Finish</option>
+                </select>
+            </td>
+            <td><input type="text" value="Kuisebmund"></td>
+        </tr>
+        <tr>
+            <td><input type="date"></td>
+            <td><input type="time" value="05:50"></td>
+            <td>
+                <select>
+                    <option>Start</option>
+                    <option>Pick up.</option>
+                    <option selected>Arrival</option>
+                    <option>Leave</option>
+                    <option>Finish</option>
+                </select>
+            </td>
+            <td><input type="text" value="Last bus stop Kuisebmund"></td>
+        </tr>
+        <tr>
+            <td><input type="date"></td>
+            <td><input type="time" value="06:00"></td>
+            <td>
+                <select>
+                    <option>Start</option>
+                    <option selected>Pick up.</option>
+                    <option>Arrival</option>
+                    <option>Leave</option>
+                    <option>Finish</option>
+                </select>
+            </td>
+            <td><input type="text" value="Puma Kuisebmund"></td>
+        </tr>
+        <tr>
+            <td><input type="date"></td>
+            <td><input type="time" value="06:20"></td>
+            <td>
+                <select>
+                    <option>Start</option>
+                    <option>Pick up.</option>
+                    <option selected>Arrival</option>
+                    <option>Leave</option>
+                    <option>Finish</option>
+                </select>
+            </td>
+            <td><input type="text" value="Last bus stop Kuisebmund"></td>
+        </tr>
+    </table>
+
+    <table>
+        <tr style="background: #eee;">
+            <th>Location</th><th>Start</th><th>1st Pick</th><th>Last Set</th><th>Finish</th><th>Pax</th>
+        </tr>
+        <tr>
+            <td class="label-cell">Actual Time</td>
+            <td><input type="time"></td><td><input type="time"></td><td><input type="time"></td><td><input type="time"></td><td><input type="number"></td>
+        </tr>
+        <tr>
+            <td class="label-cell">KM reading</td>
+            <td><input type="number"></td><td><input type="number"></td><td><input type="number"></td><td><input type="number"></td><td><input type="number"></td>
+        </tr>
+    </table>
+
+    <div style="background: #0099ff; width: 30px; height: 30px; border-radius: 5px; color: white; display: flex; align-items: center; justify-content: center; margin-top: 30px;">☺</div>
+</div>
+
+<script>
+    function resetForm() {
+        if(confirm("This will clear your entries. Continue?")) {
+            location.reload();
+        }
+    }
+</script>
+
+</body>
+</html>

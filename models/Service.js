@@ -20,7 +20,8 @@ const ServiceSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        required: true
+        required: false, 
+        default: 0
     },
     imageUrl: {
         type: String,
@@ -39,19 +40,40 @@ const ServiceSchema = new mongoose.Schema({
             ]
         }
     ],
-    // Construction Portfolio (Images + Desc)
-    portfolio: [
-        {
-            title: { type: String },
-            description: { type: String },
-            imageUrl: { type: String }
-        }
-    ],
-    // Optional per-service checklist template (used for Transport & Carwash)
+    // Optional per-service checklist template
     checklistTemplate: {
         type: Object,
         default: {}
     },
+    // Interactive Work Ticket template data
+    workTicketTemplate: {
+        type: Object,
+        default: {}
+    },
+    // Tracks if a clerk has edited this specific template
+    clerkHasEditedTemplate: {
+        type: Boolean,
+        default: false
+    },
+    lastEditedByClerkName: {
+        type: String,
+        default: null
+    },
+    lastEditedByClerkDate: {
+        type: Date,
+        default: null
+    },
+    // NEW: Array to track the last 10 edits
+    editHistory: [
+        {
+            editorName: String,
+            editorRole: String,
+            editedAt: {
+                type: Date,
+                default: Date.now
+            }
+        }
+    ],
     onSale: {
         type: Boolean,
         default: false

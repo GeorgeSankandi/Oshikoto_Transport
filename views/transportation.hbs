@@ -9,7 +9,7 @@
                 <h2 class="gradient-text mb-3 display-5">{{siteContent.transport_section_title}}</h2>
                 <p class="lead text-muted" style="text-align: justify;">{{siteContent.transport_section_desc}}</p>
                 <div class="mt-4">
-                    <a href="/contact" class="btn btn-primary">Book Transport Services</a>
+                    <a href="/contact" class="btn btn-primary">Contact Us</a>
                 </div>
             </div>
         </div>
@@ -27,23 +27,12 @@
     <div class="col-lg-4 col-md-6 mb-4" data-service-id="{{_id}}" data-service-title="{{title}}">
       <div class="card h-100 shadow-sm border-0">
         <img src="{{imageUrl}}" class="card-img-top" alt="{{title}}" style="height: 220px; object-fit: cover;">
-         {{#if this.onSale}}
-            <div class="sale-badge">SPECIAL</div>
-        {{/if}}
         <div class="card-body d-flex flex-column">
           <h5 class="card-title">{{title}}</h5>
-           {{#if this.onSale}}
-                <div class="timer-container">
-                    <small>Offer ends in:</small>
-                    <div class="countdown-timer" data-sale-end="{{this.saleEndDate}}"></div>
-                </div>
-            {{/if}}
           <h6 class="card-subtitle mb-2 text-muted">{{category}}</h6>
-          <p class="card-text"><strong>Rate:</strong> N$ {{price}} / day</p>
+          {{!-- REMOVED: Price display --}}
           
-          {{!-- REMOVED MINI-BOOKING FORM from here --}}
-
-          <a href="/services/{{_id}}" class="btn btn-primary mt-auto">View Details & Rent</a> {{!-- Restored to original --}}
+          <a href="/services/{{_id}}" class="btn btn-primary mt-auto">View Details & Rent</a>
 
                     <!-- Fleet Documents (PDF Downloads) - per service card -->
                     <button class="btn btn-outline-secondary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#fleetDocs-{{_id}}" aria-expanded="false" aria-controls="fleetDocs-{{_id}}">Fleet Documents</button>

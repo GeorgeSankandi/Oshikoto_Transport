@@ -5,7 +5,7 @@ const Service = require('../models/Service');
 
 // @desc    Show About Us page
 // @route   GET /about
-router.get('/about', async (req, res) => { // <-- Make the function async
+router.get('/about', async (req, res) => {
     try {
         // Fetch all site content documents from the database
         const contentDocs = await SiteContent.find().lean();
@@ -18,7 +18,7 @@ router.get('/about', async (req, res) => { // <-- Make the function async
 
         res.render('about', {
             page: 'about',
-            siteContent // <-- Pass the content object to the template
+            siteContent 
         });
     } catch (err) {
         console.error(err);
@@ -68,15 +68,14 @@ router.get('/team/:id', async (req, res) => {
   }
 });
 
-
 // @desc    Show Transportation/Fleet page
 // @route   GET /transportation
 router.get('/transportation', async (req, res) => {
     try {
-        const vehicles = await Service.find({ category: { $regex: /transport/i } }).populate('provider').sort({ createdAt: 'desc' }).lean();
+        const vehicles = await Service.find().populate('provider').sort({ createdAt: 'desc' }).lean();
         res.render('transportation', {
             page: 'services', // This keeps the hero section consistent
-            services: vehicles // Pass filtered vehicles to the template
+            services: vehicles // Pass vehicles to the template
         });
     } catch (err) {
         console.error(err);
@@ -84,65 +83,37 @@ router.get('/transportation', async (req, res) => {
     }
 });
 
-// @desc    Placeholder for Construction page
+// @desc    Show Construction page
 // @route   GET /construction
-router.get('/construction', (req, res) => {
+router.get('/construction', async (req, res) => {
     try {
-        // Show services in the Construction category and render the construction pillar page (with portfolio)
-        Service.find({ category: { $regex: /construction|civil/i } }).populate('provider').sort({ createdAt: 'desc' }).lean()
-            .then(services => {
-                res.render('placeholder', { 
-                    page: 'services', 
-                    title: 'Civil & Building Construction',
-                    context: 'construction',
-                    services
-                });
-            })
-            .catch(err => {
-                console.error(err);
-                res.render('error/500');
-            });
+        res.render('construction', { page: 'services' });
     } catch (err) {
         console.error(err);
         res.render('error/500');
     }
 });
 
-// @desc    Placeholder for Technical Services page
+// @desc    Show Technical page
 // @route   GET /technical
-router.get('/technical', (req, res) => {
+router.get('/technical', async (req, res) => {
     try {
-        Service.find({ category: { $regex: /technical|repair/i } }).populate('provider').sort({ createdAt: 'desc' }).lean()
-            .then(services => {
-                res.render('services/index', { page: 'services', services });
-            })
-            .catch(err => {
-                console.error(err);
-                res.render('error/500');
-            });
+        res.render('technical', { page: 'services' });
     } catch (err) {
         console.error(err);
         res.render('error/500');
     }
 });
 
-// @desc    Placeholder for General Supply page
+// @desc    Show General Supply page
 // @route   GET /general-supply
-router.get('/general-supply', (req, res) => {
+router.get('/general-supply', async (req, res) => {
     try {
-        Service.find({ category: { $regex: /general|supply|services/i } }).populate('provider').sort({ createdAt: 'desc' }).lean()
-            .then(services => {
-                res.render('services/index', { page: 'services', services });
-            })
-            .catch(err => {
-                console.error(err);
-                res.render('error/500');
-            });
+        res.render('general-supply', { page: 'services' });
     } catch (err) {
         console.error(err);
         res.render('error/500');
     }
 });
-
 
 module.exports = router;

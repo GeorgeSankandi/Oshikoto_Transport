@@ -11,77 +11,7 @@ router.get('/login', (req, res) => res.render('login', {
     page: 'login'
 }));
 
-// Register Page
-router.get('/register', (req, res) => res.render('register', {
-    layout: 'main',
-    page: 'register'
-}));
-
-// Register Route
-router.post('/register', async (req, res) => {
-  const { name, email, password, password2 } = req.body;
-  let errors = [];
-
-  // --- Validation Checks ---
-  if (!name || !email || !password || !password2) {
-    errors.push({ msg: 'Please enter all fields' });
-  }
-  if (password !== password2) {
-    errors.push({ msg: 'Passwords do not match' });
-  }
-
-  // --- UPDATED STRICT PASSWORD VALIDATION ---
-  
-  // 1. Length >= 8
-  if (password.length < 8) {
-    errors.push({ msg: 'Password must be at least 8 characters long.' });
-  }
-
-  // 2. Minimum 1 Capital Letter
-  const upperCaseCount = (password.match(/[A-Z]/g) || []).length;
-  if (upperCaseCount < 1) {
-      errors.push({ msg: 'Password must contain at least one uppercase letter.' });
-  }
-
-  // 3. Minimum 2 Numbers
-  const numberCount = (password.match(/[0-9]/g) || []).length;
-  if (numberCount < 2) {
-      errors.push({ msg: 'Password must contain at least 2 numbers.' });
-  }
-
-  // 4. Minimum 1 Unique Character (Symbol)
-  const symbolCount = (password.match(/[^a-zA-Z0-9]/g) || []).length;
-  if (symbolCount < 1) {
-      errors.push({ msg: 'Password must contain at least 1 unique character (symbol).' });
-  }
-
-  if (errors.length > 0) {
-    return res.render('register', { errors, name, email });
-  }
-
-  // --- User Creation Logic ---
-  try {
-    const existingUser = await User.findOne({ email: email });
-    if (existingUser) {
-      errors.push({ msg: 'An account with that email already exists' });
-      return res.render('register', { errors, name, email });
-    }
-    
-    // Force role to 'client' for all public registrations
-    const role = 'client';
-
-    const newUser = new User({ name, email, password, role });
-    await newUser.save();
-    
-    req.flash('success_msg', 'You have successfully registered and can now log in');
-    res.redirect('/login');
-
-  } catch (err) {
-    console.error('Error during registration:', err);
-    req.flash('error_msg', 'Something went wrong on our end. Please try registering again.');
-    res.redirect('/register');
-  }
-});
+// REMOVED: GET /register and POST /register routes have been completely removed.
 
 // Login
 router.post('/login', (req, res, next) => {

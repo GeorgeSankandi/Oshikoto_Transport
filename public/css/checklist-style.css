@@ -16,7 +16,7 @@
     --gradient-overlay: linear-gradient(to bottom, #64B298 0%, #A3CE74 100%);
 }
 
-body {
+.checklist-page {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 5px; /* Reduced padding */
@@ -403,8 +403,8 @@ body {
     }
 
     /* Fonts */
-    body { font-size: 12px; }
-    .instructions p { margin: 2px 0; }
+    .checklist-page { font-size: 12px; }
+    .checklist-page .instructions p { margin: 2px 0; }
     
     /* Fix "Other Checks" table */
     .other-checks table { display: block; }

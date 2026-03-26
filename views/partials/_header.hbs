@@ -15,16 +15,8 @@
                 <li class="nav-item">
                     <a class="nav-link {{#if (ifeq page 'home')}}active{{/if}}" href="/">Home</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{#if (ifeq page 'services')}}active{{/if}}" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Our Services
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
-                        <li><a class="dropdown-item" href="/transportation">Our Transportation Fleet</a></li>
-                        <li><a class="dropdown-item" href="/construction">Civil & Building Construction</a></li>
-                        <li><a class="dropdown-item" href="/technical">Technical & Repair Services</a></li>
-                        <li><a class="dropdown-item" href="/general-supply">General Services & Supply</a></li>
-                    </ul>
+                <li class="nav-item">
+                    <a class="nav-link {{#if (ifeq page 'services')}}active{{/if}}" href="/transportation">Our Fleet</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{#if (ifeq page 'about')}}active{{/if}}" href="/about">About Us</a>
@@ -39,19 +31,13 @@
 
             <!-- User-specific links pushed to the right -->
             <ul class="navbar-nav ms-auto">
+                <!-- If the user IS logged in, show Dashboard and Logout -->
                 {{#if user}}
                     <li class="nav-item">
                         <a class="nav-link {{#if (ifeq page 'dashboard')}}active{{/if}}" href="/dashboard">Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Logout</a>
-                    </li>
-                {{else}}
-                    <li class="nav-item">
-                        <a class="nav-link {{#if (ifeq page 'login')}}active{{/if}}" href="/login">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{#if (ifeq page 'register')}}active{{/if}}" href="/register">Register</a>
                     </li>
                 {{/if}}
             </ul>

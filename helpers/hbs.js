@@ -50,6 +50,10 @@ module.exports = {
       if (!str) return false;
       return String(str).toLowerCase().includes(String(searchStr).toLowerCase());
   },
+  startsWith: function(str, searchStr) {
+      if (!str) return false;
+      return String(str).startsWith(String(searchStr));
+  },
   replace: function(str, find, replaceWith) {
       if (!str) return '';
       // Replaces all occurrences
@@ -64,6 +68,17 @@ module.exports = {
       // Remove the last argument which is the Handlebars options object
       const values = args.slice(0, -1);
       return values.some(v => !!v);
+  },
+  checklistStatus: function(checklistTemplate, key) {
+    if (!checklistTemplate || !key) return '';
+    const value = checklistTemplate[key];
+    if (value === undefined || value === null) return '';
+    if (typeof value === 'object') {
+      if (value.Status) return value.Status;
+      if (value.status) return value.status;
+      return JSON.stringify(value);
+    }
+    return value;
   },
   // --- JSON Helper (The Fix) ---
   json: function(context) {

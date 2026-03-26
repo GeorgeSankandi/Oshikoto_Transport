@@ -1,8 +1,8 @@
-<div class="row gx-5">
-    <div class="col-lg-7">
+﻿<div class="row gx-5">
+    <div class="col-12">
         <img src="{{service.imageUrl}}" class="img-fluid rounded mb-4" alt="{{service.title}}" style="box-shadow: var(--shadow); width: 100%; object-fit: cover;">
         <h1 class="mb-3">{{service.title}}</h1>
-        <p class="text-muted">Category: {{service.category}}</p>
+        <p class="text-muted">Location: {{service.category}}</p>
         <hr class="my-4">
         <h4>Service Description</h4>
         <p class="lead" style="font-size: 1.1rem;">{{service.description}}</p>
@@ -22,61 +22,370 @@
         </div>
         {{/if}}
     </div>
+</div>
 
-    <div class="col-lg-5">
-        <div class="card shadow-sm border-0 sticky-top" style="top: 100px;">
-            <div class="card-body p-4">
-                <h4 class="card-title text-center mb-4">Book this Service</h4>
-                {{#if service.onSale}}
-                    <div class="sale-badge-large w-100">ON SALE!</div>
-                    <div class="timer-container-large mb-3">
-                        <small>Offer ends in:</small>
-                        <div class="countdown-timer" data-sale-end="{{service.saleEndDate}}"></div>
-                    </div>
-                {{/if}}
-                <div class="text-center mb-4">
-                    <h2 class="text-danger fw-bold">N$ {{service.price}} <small class="text-muted fs-6">/ day</small></h2>
+<!-- ====================================================== -->
+<!-- === Display Service's Checklist Template           === -->
+<!-- ====================================================== -->
+<style>
+    .a4-document-container { page-break-inside: avoid; break-inside: avoid; }
+    .wt-a4-container { page-break-inside: avoid; break-inside: avoid; }
+    .a4-document-container table { page-break-inside: avoid; break-inside: avoid; }
+    .wt-a4-container table { page-break-inside: avoid; break-inside: avoid; }
+</style>
+{{#if service.checklistTemplate}}
+<div class="row mt-5">
+    <div class="col-12">
+        <h3 class="mt-5 section-title text-center">Pre-Departure Checklist Items</h3>
+        
+        <!-- Download PDF Button for Checklist -->
+        <div class="text-center mb-3">
+            <button class="btn btn-outline-danger" onclick="downloadSectionPDF('checklist-pdf-container', '{{service.title}}_Checklist.pdf', this)">
+                <i class="fas fa-file-pdf me-2"></i> Download Checklist as PDF
+            </button>
+        </div>
+
+        <!-- MODIFIED: Added inline background white and padding to guarantee clean PDF rendering -->
+        <div class="a4-document-container mx-auto" id="checklist-pdf-container" style="background-color: #ffffff; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+             <h1 class="text-center p-1 border border-bottom-0 mb-0 bg-light fw-bold h6" style="font-size: 13px; margin: 0;">Daily Fleet Pre-Departure Checklist</h1>
+             <div class="row" style="margin: 0;">
+                <!-- Left Column -->
+                <div class="col-md-6" style="padding: 0 5px;">
+                    <table class="w-100" style="font-size: 11px; table-layout: fixed; border-collapse: collapse; margin-bottom: 0;">
+                        <thead><tr style="background: #f8f9fa;"><th style="padding: 3px 2px; border: 1px solid #dee2e6; width: 80%; font-size: 11px;">External Item</th><th style="padding: 3px 2px; border: 1px solid #dee2e6; text-align: center; width: 20%; font-size: 11px;">Default Status</th></tr></thead>
+                        <tbody>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Brake Fluid</td><td style="padding: 3px 2px; border: 1px solid #dee2e6; text-align: center;"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Brake_Fluid'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Window Washer Fluid</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Window_Washer_Fluid'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Door Handles</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Door_Handles'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">License valid</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'License_valid'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Branding Intact</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Branding_Intact'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Lights - Brake Lights</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Lights_Brake_Lights'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; padding-left: 20px; border: 1px solid #dee2e6;">- Brights / Dimmed</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Lights_Brights_Dimmed'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; padding-left: 20px; border: 1px solid #dee2e6;">- Indicators</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Lights_Indicators'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; padding-left: 20px; border: 1px solid #dee2e6;">- Reverse Lights</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Lights_Reverse_Lights'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; padding-left: 20px; border: 1px solid #dee2e6;">- Room lights</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Lights_Room_lights_Ext'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; padding-left: 20px; border: 1px solid #dee2e6;">- Fog light</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Fog_light'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Oil Leaks</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Oil_Leaks'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Oil Level</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Oil_Level'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Spare Wheel</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Spare_Wheel'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Tire Tread</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Tire_Tread'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Power steering fluid</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Power_steering_fluid'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Water Leaks</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Water_Leaks'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Wheel Nuts</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Wheel_Nuts'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Windows</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Windows'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Wiper Blades</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Wiper_Blades'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Triangles (x2) [in case of breakdown]</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Triangles'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Jack</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Jack'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Reflective Jacket (in case of breakdown â€“ optional)</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Reflective_Jacket'}}</span></td></tr>
+                        </tbody>
+                    </table>
                 </div>
-                
-                <form action="/bookings" method="POST">
-                    <input type="hidden" name="serviceId" value="{{service._id}}">
-                    <div class="mb-3">
-                        <label for="bookingDate" class="form-label fw-bold">Select Date</label>
-                        <input type="date" class="form-control form-control-lg" id="bookingDate" name="bookingDate" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="bookingTime" class="form-label fw-bold">Select Time</label>
-                        <input type="time" class="form-control form-control-lg" id="bookingTime" name="bookingTime" required>
-                    </div>
-                    {{#if user}}
-                        <button type="submit" class="btn btn-primary w-100 btn-lg">Request Booking</button>
-                    {{else}}
-                        <a href="/login" class="btn btn-outline-primary w-100 btn-lg">Login to Book</a>
-                    {{/if}}
-                </form>
+                <!-- Right Column -->
+                <div class="col-md-6" style="padding: 0 5px;">
+                     <table class="w-100" style="font-size: 11px; table-layout: fixed; border-collapse: collapse; margin-bottom: 0;">
+                        <thead><tr style="background: #f8f9fa;"><th style="padding: 3px 2px; border: 1px solid #dee2e6; width: 80%; font-size: 11px;"></th><th style="padding: 3px 2px; border: 1px solid #dee2e6; text-align: center; width: 20%; font-size: 11px;"></th></tr></thead>
+                        <tbody>
+                             <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Camera working</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Camera_working'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Service brake</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Service_brake'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Toolbox</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Toolbox'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Spare spanners</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Spare_spanners'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Wheel spanner</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Wheel_spanner'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">100 km sticker</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate '100_km_sticker'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Log book (MDC)</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Log_book'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Air leaks</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Air_leaks'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Stop blocks</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Stop_blocks'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Fleet numbers</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Fleet_numbers'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Valid public permit</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Valid_public_permit'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Revers hooter</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Revers_hooter'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Reflector strips</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Reflector_strips'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Park brake</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Park_brake'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Emergency brake</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Emergency_brake'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Diesel leaks</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Diesel_leaks'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Exhaust leaks</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Exhaust_leaks'}}</span></td></tr>
+                            <tr style="background: #f8f9fa;"><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class=" fw-bold">Internal Item</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class=" text-center fw-bold">Default Status</td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Warning Lights</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Warning_Lights'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Heat Guage</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Heat_Guage'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Hooter</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Hooter'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Seats & Seat Belts</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Seats_Seat_Belts'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Mirrors (rear & side)</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Mirrors'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="">Room Lights</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Room_Lights_Int'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Fuel level (%)</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Fuel_level'}}</span></td></tr>
+                            <tr><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="class-a">Fuel tag</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Fuel_tag'}}</span></td></tr>
+                            <tr style="background: #f8f9fa;"><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class=" fw-bold">Other</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class=" text-center fw-bold"></td></tr>
+                            <tr><td class="p-1 border" style="font-size: 0.9rem;">Fire Extinguisher available?</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'Fire_Extinguisher'}}</span></td></tr>
+                            <tr><td class="p-1 border" style="font-size: 0.9rem;">First aid kit available?</td><td style="padding: 3px 2px; border: 1px solid #dee2e6;" class="text-center"><span class="badge bg-secondary" style="font-size: 10px;">{{checklistStatus service.checklistTemplate 'First_Aid_Kit'}}</span></td></tr>
+                        </tbody>
+                     </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Container for Submitted Checklists (Dynamic JS) -->
-{{!-- MODIFIED: Wrapped in 'if user' to hide from non-logged-in users --}}
-{{#if user}}
+<!-- ====================================================== -->
+<!-- === Display Service's Work Ticket Template         === -->
+<!-- ====================================================== -->
+{{#if service.workTicketTemplate}}
 <div class="row mt-5">
-    <div class="col-12" id="service-checklists">
-        <!-- JS loads history here, styled strictly like the A4 template -->
+    <div class="col-12">
+        <h3 class="section-title text-center">Interactive Work Ticket</h3>
+        
+        <!-- Download PDF Button for Work Ticket -->
+        <div class="text-center mb-3">
+            <button class="btn btn-outline-danger" onclick="downloadSectionPDF('workticket-pdf-container', '{{service.title}}_WorkTicket.pdf', this)">
+                <i class="fas fa-file-pdf me-2"></i> Download Work Ticket as PDF
+            </button>
+        </div>
+
+        <style>
+            .wt-wrapper { font-family: Arial, sans-serif; background-color: transparent; display: flex; justify-content: center; }
+            .wt-a4-container { width: 100%; max-width: 210mm; padding: 8mm; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; color: #2c3e50; }
+            .wt-a4-container input, .wt-a4-container select, .wt-a4-container textarea { width: 100%; border: none; font-family: inherit; font-size: 12px; color: #2c3e50; background: transparent; outline: none; appearance: none; -webkit-appearance: none; }
+            .wt-header-top { display: flex; justify-content: space-between; margin-bottom: 10px; gap: 10px; }
+            .wt-logo-section { width: 55%; border: 1px solid #ddd; padding: 8px; text-align: center; }
+            .wt-contact-section { width: 40%; text-align: right; font-size: 12px; }
+            .wt-contact-section h2 { color: #1a3a6c; margin: 0 0 5px 0; font-size: 13px; }
+            .wt-a4-container table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+            .wt-a4-container th, .wt-a4-container td { border: 1px solid #8ba4c7; padding: 4px 3px; text-align: left; font-size: 12px; }
+            .wt-emergency-table { width: 280px; float: right; margin-bottom: 10px; }
+            .wt-label-cell { background-color: #f9f9f9; width: 30%; font-weight: bold; }
+        </style>
+        <div class="wt-wrapper" style="margin-bottom: 15px;">
+            <div class="wt-a4-container" id="workticket-pdf-container" style="background-color: #ffffff;">
+                <div class="wt-header-top">
+                    <div class="wt-logo-section">
+                        <div style="font-size: 24px; font-weight: bold; color: #ffd700; text-shadow: 1px 1px #000;">OSHIKOTO TRANSPORT</div>
+                        <div style="font-size: 11px;">[Bus Image Placeholder]</div>
+                    </div>
+                    <div class="wt-contact-section">
+                        <div style="font-size: 16px;">WORK TICKET</div>
+                        <h2>OSHIKOTO TRANSPROT INVESTMENTS CC</h2>
+                        Po Box 1423, Otjiwarongo<br>Tel No: 067304460<br>Email: oshikotowalvis01@gmail.com
+                    </div>
+                </div>
+
+                <table class="wt-emergency-table">
+                    <tr><td class="wt-label-cell">Emergency number</td><td>0814763606<br>0813056788</td></tr>
+                </table>
+                <div style="clear:both"></div>
+
+                <div style="display: flex; gap: 20px;">
+                    <table style="width: 50%;">
+                        <tr><td class="wt-label-cell">Seats</td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_seats}}"></td></tr>
+                        <tr><td class="wt-label-cell">Vehicle type</td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_vehicle_type}}"></td></tr>
+                        <tr><td class="wt-label-cell">Reg No</td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_reg_no}}"></td></tr>
+                        <tr><td class="wt-label-cell">Fleet No</td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_fleet_no}}"></td></tr>
+                    </table>
+                    <table style="width: 50%;">
+                        <tr><td class="wt-label-cell">TICKET NO</td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_ticket_no}}"></td></tr>
+                        <tr><td class="wt-label-cell" style="height: 60px;">Driver name</td><td><textarea rows="3" readonly>{{service.workTicketTemplate.wt_driver_name}}</textarea></td></tr>
+                    </table>
+                </div>
+
+                <table><tr><td class="wt-label-cell" style="width: 25%;">Shifts</td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_shifts}}"></td></tr></table>
+                <table>
+                    <tr><td class="wt-label-cell" style="width: 25%;">First pick up.</td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_first_pickup}}"></td></tr>
+                    <tr><td class="wt-label-cell">Destination</td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_destination}}"></td></tr>
+                </table>
+
+                <table id="wt_itinerary">
+                    <tr style="background: #eee;"><th style="width: 20%;">Date</th><th style="width: 15%;">Time</th><th style="width: 15%;">Type</th><th>Location</th></tr>
+                    <tr><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_1_date}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_1_time}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_1_type}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_1_location}}"></td></tr>
+                    <tr><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_2_date}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_2_time}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_2_type}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_2_location}}"></td></tr>
+                    <tr><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_3_date}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_3_time}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_3_type}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_3_location}}"></td></tr>
+                    <tr><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_4_date}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_4_time}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_4_type}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_4_location}}"></td></tr>
+                    <tr><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_5_date}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_5_time}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_5_type}}"></td><td><input type="text" readonly value="{{service.workTicketTemplate.wt_itin_5_location}}"></td></tr>
+                </table>
+
+                <table>
+                    <tr style="background: #eee;"><th>Location</th><th>Start</th><th>1st Pick</th><th>Last Set</th><th>Finish</th><th>Pax</th></tr>
+                    <tr>
+                        <td class="wt-label-cell">Actual Time</td>
+                        <td><input type="text" readonly value="{{service.workTicketTemplate.wt_act_time_start}}"></td>
+                        <td><input type="text" readonly value="{{service.workTicketTemplate.wt_act_time_1st}}"></td>
+                        <td><input type="text" readonly value="{{service.workTicketTemplate.wt_act_time_last}}"></td>
+                        <td><input type="text" readonly value="{{service.workTicketTemplate.wt_act_time_finish}}"></td>
+                        <td><input type="text" readonly value="{{service.workTicketTemplate.wt_act_time_pax}}"></td>
+                    </tr>
+                    <tr>
+                        <td class="wt-label-cell">KM reading</td>
+                        <td><input type="text" readonly value="{{service.workTicketTemplate.wt_km_start}}"></td>
+                        <td><input type="text" readonly value="{{service.workTicketTemplate.wt_km_1st}}"></td>
+                        <td><input type="text" readonly value="{{service.workTicketTemplate.wt_km_last}}"></td>
+                        <td><input type="text" readonly value="{{service.workTicketTemplate.wt_km_finish}}"></td>
+                        <td><input type="text" readonly value="{{service.workTicketTemplate.wt_km_5}}"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 {{/if}}
 
-{{!-- Scripts for PDF generation logic --}}
-{{#if isWhiteBackground}} 
+{{#if canEditWorkTicket}}
+<div class="row mt-5">
+    <div class="col-12">
+        <h3 class="section-title text-center">Edit Work Ticket Defaults</h3>
+        <div class="alert alert-info py-2"><i class="fas fa-info-circle me-2"></i>You may change the default values that appear when drivers open the interactive ticket.</div>
+        <style>
+            /* scoped copy of work ticket styling */
+            .wt-wrapper { font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px; display: flex; justify-content: center; border: 1px solid #ccc; }
+            .wt-a4-container { width: 100%; max-width: 210mm; padding: 20mm; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; color: #2c3e50; }
+            .wt-a4-container input, .wt-a4-container select, .wt-a4-container textarea { width: 100%; border: none; font-family: inherit; font-size: 13px; color: #2c3e50; background: transparent; outline: none; appearance: none; -webkit-appearance: none; }
+            .wt-a4-container select:focus, .wt-a4-container select:hover { background: #f0f7ff; appearance: auto; -webkit-appearance: menulist; }
+            .wt-a4-container input:focus, .wt-a4-container textarea:focus { background: #f0f7ff; }
+            .wt-header-top { display: flex; justify-content: space-between; margin-bottom: 40px; }
+            .wt-logo-section { width: 55%; border: 1px solid #ddd; padding: 10px; text-align: center; }
+            .wt-contact-section { width: 40%; text-align: right; font-size: 14px; }
+            .wt-contact-section h2 { color: #1a3a6c; margin: 0 0 10px 0; font-size: 15px; }
+            .wt-a4-container table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+            .wt-a4-container th, .wt-a4-container td { border: 1px solid #8ba4c7; padding: 6px; text-align: left; font-size: 13px; }
+            .wt-emergency-table { width: 280px; float: right; margin-bottom: 20px; }
+            .wt-label-cell { background-color: #f9f9f9; width: 30%; font-weight: bold; }
+        </style>
+        <form id="workTicketConfigForm" action="/services/{{service._id}}?_method=PUT" method="POST">
+            <input type="hidden" id="work_ticket_template_json" name="work_ticket_template_json">
+                <div class="wt-wrapper">
+                <div class="wt-a4-container" id="ticketForm">
+                    <div class="wt-header-top">
+                        <div class="wt-logo-section">
+                            <div style="font-size: 24px; font-weight: bold; color: #ffd700; text-shadow: 1px 1px #000;">HIKOTO TRANSPORT</div>
+                            <div style="font-size: 11px;">[Bus Image Placeholder]</div>
+                        </div>
+                        <div class="wt-contact-section">
+                            <div style="font-size: 16px;">WORK TICKET</div>
+                            <h2>OSHIKOTO TRANSPROT INVESTMENTS CC</h2>
+                            Po Box 1423, Otjiwarongo<br>Tel No: 067304460<br>Email: oshikotowalvis01@gmail.com
+                        </div>
+                    </div>
+
+                    <table class="wt-emergency-table">
+                        <tr><td class="wt-label-cell">Emergency number</td><td>0814763606<br>0813056788</td></tr>
+                    </table>
+                    <div style="clear:both"></div>
+
+                    <div style="display: flex; gap: 20px;">
+                        <table style="width: 50%;">
+                            <tr><td class="wt-label-cell">Seats</td><td><input type="number" name="wt_seats" value="{{service.workTicketTemplate.wt_seats}}"></td></tr>
+                            <tr><td class="wt-label-cell">Vehicle type</td><td><input type="text" name="wt_vehicle_type" value="{{service.workTicketTemplate.wt_vehicle_type}}"></td></tr>
+                            <tr><td class="wt-label-cell">Reg No</td><td><input type="text" name="wt_reg_no" value="{{service.workTicketTemplate.wt_reg_no}}"></td></tr>
+                            <tr><td class="wt-label-cell">Fleet No</td><td><input type="text" name="wt_fleet_no" value="{{service.workTicketTemplate.wt_fleet_no}}"></td></tr>
+                        </table>
+                        <table style="width: 50%;">
+                            <tr><td class="wt-label-cell">TICKET NO</td><td><input type="text" name="wt_ticket_no" value="{{service.workTicketTemplate.wt_ticket_no}}"></td></tr>
+                            <tr><td class="wt-label-cell" style="height: 60px;">Driver name</td><td><textarea rows="3" name="wt_driver_name">{{service.workTicketTemplate.wt_driver_name}}</textarea></td></tr>
+                        </table>
+                    </div>
+
+                    <table><tr><td class="wt-label-cell" style="width: 25%;">Shifts</td><td><input type="text" name="wt_shifts" value="{{service.workTicketTemplate.wt_shifts}}"></td></tr></table>
+                    <table>
+                        <tr><td class="wt-label-cell" style="width: 25%;">First pick up.</td><td><input type="text" name="wt_first_pickup" value="{{service.workTicketTemplate.wt_first_pickup}}"></td></tr>
+                        <tr><td class="wt-label-cell">Destination</td><td><input type="text" name="wt_destination" value="{{service.workTicketTemplate.wt_destination}}"></td></tr>
+                    </table>
+
+                    <table id="wt_itinerary">
+                        <tr style="background: #eee;"><th style="width: 20%;">Date</th><th style="width: 15%;">Time</th><th style="width: 15%;">Type</th><th>Location</th></tr>
+                        <tr><td><input type="date" name="wt_itin_1_date" value="{{service.workTicketTemplate.wt_itin_1_date}}"></td><td><input type="time" name="wt_itin_1_time" value="{{service.workTicketTemplate.wt_itin_1_time}}"></td><td><select name="wt_itin_1_type"><option>Start</option><option>Pick up.</option><option>Arrival</option><option>Leave</option><option>Finish</option></select></td><td><input type="text" name="wt_itin_1_location" value="{{service.workTicketTemplate.wt_itin_1_location}}"></td></tr>
+                        <tr><td><input type="date" name="wt_itin_2_date" value="{{service.workTicketTemplate.wt_itin_2_date}}"></td><td><input type="time" name="wt_itin_2_time" value="{{service.workTicketTemplate.wt_itin_2_time}}"></td><td><select name="wt_itin_2_type"><option>Start</option><option>Pick up.</option><option>Arrival</option><option>Leave</option><option>Finish</option></select></td><td><input type="text" name="wt_itin_2_location" value="{{service.workTicketTemplate.wt_itin_2_location}}"></td></tr>
+                        <tr><td><input type="date" name="wt_itin_3_date" value="{{service.workTicketTemplate.wt_itin_3_date}}"></td><td><input type="time" name="wt_itin_3_time" value="{{service.workTicketTemplate.wt_itin_3_time}}"></td><td><select name="wt_itin_3_type"><option>Start</option><option>Pick up.</option><option>Arrival</option><option>Leave</option><option>Finish</option></select></td><td><input type="text" name="wt_itin_3_location" value="{{service.workTicketTemplate.wt_itin_3_location}}"></td></tr>
+                        <tr><td><input type="date" name="wt_itin_4_date" value="{{service.workTicketTemplate.wt_itin_4_date}}"></td><td><input type="time" name="wt_itin_4_time" value="{{service.workTicketTemplate.wt_itin_4_time}}"></td><td><select name="wt_itin_4_type"><option>Start</option><option>Pick up.</option><option>Arrival</option><option>Leave</option><option>Finish</option></select></td><td><input type="text" name="wt_itin_4_location" value="{{service.workTicketTemplate.wt_itin_4_location}}"></td></tr>
+                        <tr><td><input type="date" name="wt_itin_5_date" value="{{service.workTicketTemplate.wt_itin_5_date}}"></td><td><input type="time" name="wt_itin_5_time" value="{{service.workTicketTemplate.wt_itin_5_time}}"></td><td><select name="wt_itin_5_type"><option>Start</option><option>Pick up.</option><option>Arrival</option><option>Leave</option><option>Finish</option></select></td><td><input type="text" name="wt_itin_5_location" value="{{service.workTicketTemplate.wt_itin_5_location}}"></td></tr>
+                    </table>
+
+                    <table>
+                        <tr style="background: #eee;"><th>Location</th><th>Start</th><th>1st Pick</th><th>Last Set</th><th>Finish</th><th>Pax</th></tr>
+                        <tr>
+                            <td class="wt-label-cell">Actual Time</td>
+                            <td><input type="time" name="wt_act_time_start" value="{{service.workTicketTemplate.wt_act_time_start}}"></td>
+                            <td><input type="time" name="wt_act_time_1st" value="{{service.workTicketTemplate.wt_act_time_1st}}"></td>
+                            <td><input type="time" name="wt_act_time_last" value="{{service.workTicketTemplate.wt_act_time_last}}"></td>
+                            <td><input type="time" name="wt_act_time_finish" value="{{service.workTicketTemplate.wt_act_time_finish}}"></td>
+                            <td><input type="number" name="wt_act_time_pax" value="{{service.workTicketTemplate.wt_act_time_pax}}"></td>
+                        </tr>
+                        <tr>
+                            <td class="wt-label-cell">KM reading</td>
+                            <td><input type="number" name="wt_km_start" value="{{service.workTicketTemplate.wt_km_start}}"></td>
+                            <td><input type="number" name="wt_km_1st" value="{{service.workTicketTemplate.wt_km_1st}}"></td>
+                            <td><input type="number" name="wt_km_last" value="{{service.workTicketTemplate.wt_km_last}}"></td>
+                            <td><input type="number" name="wt_km_finish" value="{{service.workTicketTemplate.wt_km_finish}}"></td>
+                            <td><input type="number" name="wt_km_5" value="{{service.workTicketTemplate.wt_km_5}}"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div style="background: #0099ff; width: 30px; height: 30px; border-radius: 5px; color: white; display: flex; align-items: center; justify-content: center; margin-top: 30px;">â˜º</div>
+            <hr class="my-4">
+            <button type="submit" class="btn btn-primary btn-lg px-5 w-100 mb-3">Save Defaults</button>
+        </form>
+    </div>
+</div>
 <script>
-    {{#if service.checklistTemplate}}
-        window.serviceTemplateData = {{{json service.checklistTemplate}}};
-    {{else}}
-        window.serviceTemplateData = {};
-    {{/if}}
-    window.serviceTitle = "{{service.title}}";
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('workTicketConfigForm');
+        form.addEventListener('submit', function(e) {
+            const wtSection = document.getElementById('workTicketConfigForm');
+            if (wtSection) {
+                const wtData = {};
+                const wtInputs = wtSection.querySelectorAll('input[name^="wt_"], select[name^="wt_"], textarea[name^="wt_"]');
+                wtInputs.forEach(input => {
+                    wtData[input.name] = input.value;
+                });
+                document.getElementById('work_ticket_template_json').value = JSON.stringify(wtData);
+            }
+        });
+    });
 </script>
 {{/if}}
+
+<!-- Container for SUBMITTED Checklists (Dynamic JS) -->
+{{#if user}}
+<div class="row mt-5">
+    <div class="col-12" id="service-checklists">
+        <!-- JS loads user's submission history here -->
+    </div>
+</div>
+{{/if}}
+
+<!-- MODIFIED: Dedicated script for direct HTML to PDF conversion -->
+<script>
+    function downloadSectionPDF(elementId, filename, btn) {
+        const element = document.getElementById(elementId);
+        if(!element) return;
+        
+        // Save original button state and show loading
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Generating PDF...';
+        btn.disabled = true;
+
+        // html2pdf options
+        const opt = {
+            margin:       [0.3, 0.1], // Minimal Top/Bottom, Left/Right margins
+            filename:     filename,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { 
+                scale: 2, 
+                useCORS: true,
+                windowWidth: 1200, // Forces desktop layout to prevent flexbox stacking
+                backgroundColor: '#ffffff' // Ensures white background
+            },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+            pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } // Prevents page breaks
+        };
+
+        // html2pdf is globally available via the CDN included in main.hbs
+        html2pdf().set(opt).from(element).save().then(() => {
+            // Restore button state on success
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }).catch(err => {
+            console.error('PDF generation error:', err);
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            alert('Error generating PDF. Please check the console.');
+        });
+    }
+</script>
+{{/if}}
+
+
+

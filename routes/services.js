@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { uploadService } = require('../middleware/upload');
-const { ensureAuthenticated, ensureProvider, ensureCanEditServices } = require('../middleware/auth'); // MODIFIED: Imported new middleware
+const { ensureAuthenticated, ensureProvider, ensureAdmin, ensureCanEditServices } = require('../middleware/auth'); 
 const Service = require('../models/Service');
 
 // @desc    Show all services
@@ -78,27 +78,6 @@ router.post('/', ensureProvider, uploadService, async (req, res) => {
         }
         if (fleetDocs.length > 0) req.body.fleetDocs = fleetDocs;
 
-        // 3. Construction Portfolio
-        const portfolio = [];
-        for (let i = 1; i <= 3; i++) {
-            const titleField = `portfolio_${i}_title`;
-            const descField = `portfolio_${i}_desc`;
-            const imgField = `portfolio_${i}_image`;
-            
-            if (req.body[titleField] || (filesMap[imgField] && filesMap[imgField][0])) {
-                const imgUrl = (filesMap[imgField] && filesMap[imgField][0])
-                    ? '/uploads/' + filesMap[imgField][0].filename
-                    : '';
-                
-                portfolio.push({
-                    title: req.body[titleField] || `Project ${i}`,
-                    description: req.body[descField] || '',
-                    imageUrl: imgUrl
-                });
-            }
-        }
-        if (portfolio.length > 0) req.body.portfolio = portfolio;
-
         // 4. Checklist Template JSON
         if (req.body.checklist_template_json) {
             try {
@@ -106,7 +85,21 @@ router.post('/', ensureProvider, uploadService, async (req, res) => {
             } catch (err) { /* ignore */ }
         }
 
+        // Parse Work Ticket JSON
+        if (req.body.work_ticket_template_json) {
+            try {
+                req.body.workTicketTemplate = JSON.parse(req.body.work_ticket_template_json);
+            } catch (err) { /* ignore */ }
+        }
+
         req.body.onSale = !!req.body.onSale;
+
+        // Automatically log the creator in the edit history
+        req.body.editHistory = [{
+            editorName: req.user.name,
+            editorRole: req.user.role,
+            editedAt: Date.now()
+        }];
 
         await Service.create(req.body);
         req.flash('success_msg', 'Service created successfully');
@@ -125,7 +118,7 @@ router.get('/:id', async (req, res) => {
         if (!service) {
             return res.render('error/404');
         }
-        const isTransport = (service.category && (service.category.includes('Transportation') || service.category.includes('Carwash')));
+        const isTransport = (service.category && (service.category.includes('Transportation') || service.category.includes('Carwash') || ['Otjiwarongo', 'Karibib', 'Walvis Bay', 'Oranjemund'].includes(service.category)));
 
         res.render('services/show', { 
             service,
@@ -139,19 +132,25 @@ router.get('/:id', async (req, res) => {
 
 // @desc    Show edit page
 // @route   GET /services/edit/:id
-router.get('/edit/:id', ensureCanEditServices, async (req, res) => { // MODIFIED
+router.get('/edit/:id', ensureCanEditServices, async (req, res) => {
     try {
         const service = await Service.findOne({ _id: req.params.id }).lean();
         if (!service) return res.render('error/404');
         
-        // MODIFIED: Provider-specific check is now handled by middleware
         if (req.user.role === 'provider' && service.provider.toString() !== req.user.id) {
             req.flash('error_msg', 'Not Authorized');
             return res.redirect('/services');
         }
+
+        // Restrict Clerk from loading the edit page if they already edited it once
+        if (req.user.role === 'clerk' && service.clerkHasEditedTemplate) {
+            req.flash('error_msg', 'You have already configured this service template. Further edits are restricted.');
+            return res.redirect('/dashboard');
+        }
+
         res.render('services/edit', { 
             service,
-            hideNavigation: true // MODIFIED: Hide nav on edit page
+            hideNavigation: true 
         });
     } catch (err) {
         console.error(err);
@@ -161,12 +160,11 @@ router.get('/edit/:id', ensureCanEditServices, async (req, res) => { // MODIFIED
 
 // @desc    Update service
 // @route   PUT /services/:id
-router.put('/:id', ensureCanEditServices, uploadService, async (req, res) => { // MODIFIED
+router.put('/:id', ensureCanEditServices, uploadService, async (req, res) => {
     try {
         let service = await Service.findById(req.params.id).lean();
         if (!service) return res.render('error/404');
         
-        // MODIFIED: Provider-specific check is now handled by middleware
         if (req.user.role === 'provider' && service.provider.toString() !== req.user.id) {
             req.flash('error_msg', 'Not Authorized');
             return res.redirect('/services');
@@ -174,6 +172,28 @@ router.put('/:id', ensureCanEditServices, uploadService, async (req, res) => { /
         
         req.body.onSale = !!req.body.onSale;
         const updateData = req.body;
+
+        // NEW: Handle edit history (Keep last 10 entries)
+        const newHistoryEntry = {
+            editorName: req.user.name,
+            editorRole: req.user.role,
+            editedAt: Date.now()
+        };
+        let currentHistory = service.editHistory || [];
+        currentHistory.unshift(newHistoryEntry); // Add to the beginning of array
+        currentHistory = currentHistory.slice(0, 10); // Keep only the last 10
+        updateData.editHistory = currentHistory;
+
+        // Block Clerk processing if locked. If first time, flag it as edited and save clerk info.
+        if (req.user.role === 'clerk') {
+            if (service.clerkHasEditedTemplate) {
+                req.flash('error_msg', 'You are restricted from editing this template again.');
+                return res.redirect('/dashboard');
+            }
+            updateData.clerkHasEditedTemplate = true;
+            updateData.lastEditedByClerkName = req.user.name;
+            updateData.lastEditedByClerkDate = Date.now();
+        }
         
         let filesMap = req.files || {};
         if (Array.isArray(req.files)) {
@@ -197,21 +217,18 @@ router.put('/:id', ensureCanEditServices, uploadService, async (req, res) => { /
             const fileField = `fleet_doc_${i}`;
             const deleteField = `delete_fleet_doc_${i}`;
             
-            // Check if user marked this slot for deletion
             if (req.body[deleteField] === 'true') {
-                continue; // Skip adding this doc to newDocs, effectively deleting it
+                continue; 
             }
 
             const docName = req.body[nameField];
             
-            // Case 1: New File Uploaded (Replace or Create)
             if (filesMap[fileField] && filesMap[fileField][0]) {
                 const fleetDoc = {
                     name: docName || `Document ${i}`,
                     url: '/uploads/' + filesMap[fileField][0].filename,
                     checklist: []
                 };
-                // Parse items
                 let itemIndex = 1;
                 while (true) {
                     const itemKey = `fleet_doc_${i}_checklist_${itemIndex}_item`;
@@ -223,14 +240,7 @@ router.put('/:id', ensureCanEditServices, uploadService, async (req, res) => { /
                 }
                 newDocs.push(fleetDoc);
             } 
-            // Case 2: No new file, but name exists (Update Meta or Keep Existing)
             else if (docName) {
-                // Find existing doc by name/index logic. 
-                // To keep it simple: we try to match by name from old array, or just keep url if we can find it.
-                // Better approach for "Edit": We iterate slots. If existing slot i had a doc, we keep it unless deleted.
-                
-                // Find original doc at this approximate index or by name
-                // (Simple logic: look for name match in old docs)
                 const existing = currentDocs.find(d => d.name === docName) || currentDocs[i-1];
                 
                 const fleetDoc = {
@@ -253,46 +263,17 @@ router.put('/:id', ensureCanEditServices, uploadService, async (req, res) => { /
         }
         updateData.fleetDocs = newDocs;
 
-        // --- Handle Construction Portfolio Update ---
-        const currentPortfolio = service.portfolio || [];
-        const newPortfolio = [];
-        
-        for (let i = 1; i <= 3; i++) {
-             const titleField = `portfolio_${i}_title`;
-             const descField = `portfolio_${i}_desc`;
-             const imgField = `portfolio_${i}_image`;
-             const deleteField = `delete_portfolio_${i}`;
-
-             if (req.body[deleteField] === 'true') continue;
-
-             const title = req.body[titleField];
-             
-             if (title || (filesMap[imgField] && filesMap[imgField][0])) {
-                let imgUrl = '';
-                // New image?
-                if (filesMap[imgField] && filesMap[imgField][0]) {
-                    imgUrl = '/uploads/' + filesMap[imgField][0].filename;
-                } else {
-                    // Keep old image
-                    // Try to find matching entry or index
-                    const existing = currentPortfolio[i-1]; 
-                    imgUrl = existing ? existing.imageUrl : '';
-                }
-
-                newPortfolio.push({
-                    title: title || `Project ${i}`,
-                    description: req.body[descField] || '',
-                    imageUrl: imgUrl
-                });
-             }
-        }
-        updateData.portfolio = newPortfolio;
-
-
         // Checklist Template JSON
         if (req.body.checklist_template_json) {
             try {
                 updateData.checklistTemplate = JSON.parse(req.body.checklist_template_json);
+            } catch (err) { /* ignore */ }
+        }
+        
+        // Parse Work Ticket JSON
+        if (req.body.work_ticket_template_json) {
+            try {
+                updateData.workTicketTemplate = JSON.parse(req.body.work_ticket_template_json);
             } catch (err) { /* ignore */ }
         }
 
@@ -306,6 +287,20 @@ router.put('/:id', ensureCanEditServices, uploadService, async (req, res) => { /
     } catch (err) {
         console.error(err);
         return res.render('error/500');
+    }
+});
+
+// @desc    Unlock service to allow clerks to edit it again
+// @route   POST /services/:id/unlock-clerk
+router.post('/:id/unlock-clerk', ensureAdmin, async (req, res) => {
+    try {
+        await Service.findByIdAndUpdate(req.params.id, { clerkHasEditedTemplate: false });
+        req.flash('success_msg', 'Service successfully unlocked. Clerks can now edit this service again.');
+        res.redirect('/dashboard');
+    } catch (err) {
+        console.error('Error unlocking service for clerk:', err);
+        req.flash('error_msg', 'An error occurred while trying to unlock the service.');
+        res.redirect('/dashboard');
     }
 });
 

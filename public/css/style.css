@@ -1,6 +1,17 @@
 /* --- Corporate Minimalist Design for Oshikoto Transport and Investment CC --- */
 
-/* 1. Color Palette & Root Variables */
+/* 0. Global Reset + Base Box Model */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 :root {
   --namibian-blue: #001489;
   --namibian-red: #DA291C;
@@ -25,10 +36,31 @@ body {
   color: var(--dark-charcoal);
   font-weight: 400;
   line-height: 1.7;
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+#app-wrapper {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
+
+main.main-content {
+  flex: 1;
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
@@ -67,12 +99,24 @@ a:hover {
 
 .navbar {
   background: #ffffff;
-  border-bottom: 1px solid #546069;
-  box-shadow: inset 0px 0px 0px 1px #a9c5d3;
+  border-bottom: 1px solid #d8dbe0;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
   padding: 0.5rem 0;
   isolation: isolate;
-  position: relative;
-  z-index: 1050;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 2000;
+}
+
+.navbar .navbar-collapse {
+  background: #fff;
+}
+
+.navbar-light .navbar-toggler-icon {
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  background-color: #fff;
 }
 
 .navbar-brand {
@@ -123,13 +167,35 @@ a:hover {
   transition: inherit;
 }
 
-.navbar .nav-link:hover::after {
-  opacity: 0.5;
+.navbar .nav-link:hover::after,
+.navbar .nav-link:focus::after,
+.navbar .nav-link.active::after,
+.navbar .nav-link.active:hover::after,
+.navbar .nav-link.active:focus::after {
+  opacity: 0.9;
+  translate: 0 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .navbar .nav-link:hover,
-.navbar .nav-link:focus {
+.navbar .nav-link:focus,
+.navbar .nav-link.active,
+.navbar .nav-link.active:hover,
+.navbar .nav-link.active:focus {
   color: #ffffff !important;
+  background: linear-gradient(#b0c9d7, #5a8ba5 50%, #185576 50%, #326c8b) !important;
+  background-image: linear-gradient(#b0c9d7, #5a8ba5 50%, #185576 50%, #326c8b) !important;
+  border: 1px solid #0d404e !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+  border-radius: 4px !important;
+  z-index: 2;
+  position: relative !important;
+}
+
+.navbar .nav-link.active::after,
+.navbar .nav-link:hover::after,
+.navbar .nav-link:focus::after {
+  opacity: 0.9 !important;
 }
 
 .navbar .nav-link:active {
@@ -142,12 +208,26 @@ a:hover {
 }
 
 /* --- ADDED: Active State to Match Hover/Active Effect --- */
-.navbar .nav-link.active {
+.navbar .nav-link.active,
+.navbar .nav-link.active:hover,
+.navbar .nav-link.active:focus {
   color: #ffffff !important;
+  text-shadow: 0 0 8px rgba(0,0,0,0.35);
+  z-index: 1;
+  /* ensure active links mimic hover behavior */
 }
 
-.navbar .nav-link.active::after {
-  opacity: 0.8; /* Slightly less than 'active' click but visible */
+.navbar .nav-link.active::after,
+.navbar .nav-link.active:hover::after,
+.navbar .nav-link.active:focus::after {
+  opacity: 0.9 !important; /* constant visible background on active item */
+  translate: 0 0;
+  background: linear-gradient(#b0c9d7, #5a8ba5 50%, #185576 50%, #326c8b) !important;
+  background-image: linear-gradient(#b0c9d7, #5a8ba5 50%, #185576 50%, #326c8b) !important;
+}
+
+.navbar .nav-link.active {
+  position: relative;
 }
 
 /* Dropdown Menu Support for Vista Theme */
@@ -432,35 +512,8 @@ a:hover {
 }
 
 
-/* --- Sale Timer & Badge Styles --- */
-.sale-badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background-color: var(--namibian-yellow);
-    color: var(--dark-charcoal);
-    padding: 3px 10px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    border-radius: 0.25rem;
-}
-.sale-badge-large {
-    background-color: var(--namibian-yellow);
-    color: var(--dark-charcoal);
-    padding: 5px 15px;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 1rem;
-    border-radius: 0.25rem;
-}
-.timer-container, .timer-container-large {
-    background: #fff3cd;
-    border: 1px solid #ffeeba;
-    padding: 0.5rem;
-    border-radius: 0.25rem;
-    margin: 0.5rem 0;
-    text-align: center;
-}
+
+    
 .countdown-timer {
     font-weight: 600;
     color: var(--namibian-red);
