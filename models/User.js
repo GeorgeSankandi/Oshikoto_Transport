@@ -24,6 +24,10 @@ const UserSchema = new mongoose.Schema({
         enum: ['client', 'provider', 'admin', 'clerk'], // MODIFIED
         default: 'client'
     },
+    showContentTabs: {
+        type: Boolean,
+        default: true
+    },
     createdAt: {
         type: Date,
         default: Date.now

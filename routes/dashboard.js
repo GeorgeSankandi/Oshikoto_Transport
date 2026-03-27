@@ -48,7 +48,8 @@ router.get('/', ensureAuthenticated, preventCaching, async (req, res) => {
                 articles,
                 uploadedImages, 
                 isAdminPage: true,
-                hideNavigation: true
+                hideNavigation: true,
+                showContentTabs: req.user.showContentTabs
             });
         } else if (req.user.role === 'clerk') {
             const services = await Service.find().populate('provider').lean();
@@ -81,6 +82,20 @@ router.get('/', ensureAuthenticated, preventCaching, async (req, res) => {
         } else {
             res.redirect('/');
         }
+    } catch (err) {
+        console.error(err);
+        res.render('error/500');
+    }
+});
+
+// @desc    Toggle Content Tabs Visibility
+// @route   POST /dashboard/toggle-content-tabs
+router.post('/toggle-content-tabs', ensureAuthenticated, ensureAdmin, preventCaching, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        user.showContentTabs = !user.showContentTabs;
+        await user.save();
+        res.redirect('/dashboard');
     } catch (err) {
         console.error(err);
         res.render('error/500');
