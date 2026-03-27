@@ -7,14 +7,14 @@ const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const flash = require('connect-flash');
 const methodOverride = require('method-override');
-const connectDB = require('./config/db');
+const connectDB = require('./helpers/config/db');
 const SiteContent = require('./models/SiteContent'); 
 
 // Load config
 dotenv.config({ path: './.env' });
 
 // Passport config
-require('./config/passport')(passport);
+require('./helpers/config/passport')(passport);
 
 connectDB();
 

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User = require('../models/User'); // <-- Added User model import
+const User = require('../../models/User'); // <-- Added User model import
 
 // Prepare for Mongoose v7 strictQuery default change
 mongoose.set('strictQuery', false);
